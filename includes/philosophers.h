@@ -73,8 +73,8 @@ typedef struct s_philo
     int				meals_counter;
     bool			full; //=repus
     long			time_since_meal;
-    t_fork			*left_fork;
-    t_fork			*right_fork;
+    t_fork			*first_fork;
+    t_fork			*second_fork;
     pthread_t		thread_id; //un philosophe = un thread
     t_rules			*rules;
 }   t_philo;

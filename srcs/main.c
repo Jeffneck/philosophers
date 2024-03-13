@@ -6,7 +6,16 @@ input attendu ./philosophers <nb philos> <time_to_die> <time_to_eat> <time_to_sl
 
 */
 
-void	*
+void	assign_fork_pairs(int philo_nbr, int philo_id, t_philo *philos, t_fork *forks)
+{
+	if (2 % philo_id == 1)
+	{
+		philos[i/////].first_fork = &(forks[i]);
+		philos[i].second_fork = &(forks[(i + 1) % philo_nbr]);
+	}
+	// else l'inverse//////////
+
+}
 
 void    init_philos(t_rules *p_rules)
 {
@@ -19,8 +28,7 @@ void    init_philos(t_rules *p_rules)
 		p_rules->philos[i].meals_counter = 0;
 		p_rules->philos[i].full = false;
 		p_rules->philos[i].time_since_meal = 0;
-		p_rules->philos[i].left_fork = &(p_rules->forks[i]);
-		p_rules->philos[i].right_fork = ;
+		assign_forks_pairs(p_rules->philo_nbr, i + 1, p_rules->philos, p_rules->forks);
 		safe_thread_handle(&(p_rules->philos[i].thread_id), thread_routine, data, CREATE);
 		p_rules->philos[i].right_fork = ;
 
