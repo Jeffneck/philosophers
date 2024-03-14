@@ -5,7 +5,7 @@
 // la possibilite de vider le gc
 // la possibilite d' acceder a la struct t_rules pour liberer toutes les allocations
 
-static void	handle_mutex_error(int status, t_mtxcode mtxcode)
+void	handle_mutex_error(int status, t_mtxcode mtxcode)
 {
 	if (0 == status)
 		return ;
@@ -26,17 +26,17 @@ static void	handle_mutex_error(int status, t_mtxcode mtxcode)
 }
 
 //on pourrait techniquement se passer de cette fonction
-void	safe_mutex_handle(t_mtx *mutex, t_mtxcode mtxcode)
-{
-	if (LOCK == mtxcode)
-		handle_mutex_error(pthread_mutex_lock(mutex), mtxcode);
-	else if (UNLOCK == mtxcode)
-		handle_mutex_error(pthread_mutex_unlock(mutex), mtxcode);
-	else if (INIT == mtxcode)
-		handle_mutex_error(pthread_mutex_init(mutex, NULL), mtxcode);
-	else if (DESTROY == mtxcode)
-		handle_mutex_error(pthread_mutex_destroy(mutex), mtxcode);
-	else
-		exit_error("Wrong mtxcode for mutex_handle:"
-			"use <LOCK> <UNLOCK> <INIT> <DESTROY>");
-}
+// void	safe_mutex_handle(t_rules *p_rules, t_mtx *mutex, t_mtxcode mtxcode)
+// {
+// 	if (LOCK == mtxcode)
+// 		handle_mutex_error(pthread_mutex_lock(mutex), mtxcode);
+// 	else if (UNLOCK == mtxcode)
+// 		handle_mutex_error(pthread_mutex_unlock(mutex), mtxcode);
+// 	else if (INIT == mtxcode)
+// 		handle_mutex_error(pthread_mutex_init(mutex, NULL), mtxcode);
+// 	else if (DESTROY == mtxcode)
+// 		handle_mutex_error(pthread_mutex_destroy(mutex), mtxcode);
+// 	else
+// 		exit_error("Wrong mtxcode for mutex_handle:"
+// 			"use <LOCK> <UNLOCK> <INIT> <DESTROY>");
+// }

@@ -1,0 +1,24 @@
+dead lock : accessible a tous les philos, donc mutex 
+write lock :  
+
+
+
+
+
+PHILO lOOP
+un philo loop tant que end_simulation est false
+un philo eat tant qu' il n' est pas full un philo full va modifier la variable nb_philo_full(mutex) puis alterner entre sleep et think
+un philo mort va modifier la variable death_detected
+
+MONITORING LOOP
+if death_detected == 1 || nb_philos_full == nb_philos 
+	end_simulation = 1;
+
+GESTION END SIMULATION
+avant chaque ecriture de philo, verifier if (end_simulation == false)
+
+
+on cree tous les mutex , Si err appel a destroy_all_mutex
+on cree tous les threads philos,
+
+routine_philo va alterner, eat, sleep, think...

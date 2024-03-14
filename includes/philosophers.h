@@ -43,6 +43,17 @@ typedef struct s_rules t_rules;
 
 # define MALLOC_E "memory allocation error detected, program ended\n"
 
+# define EAT_MSG "%6ld"W" %d" G" is eating\n"RS
+# define SLEEP_MSG "%6ld"W" %d" Y" is sleeping\n"RS
+# define THINK_MSG "%6ld"W" %d" B" is thinking\n"RS
+# define DIED_MSG "%6ld"W" %d" R" died\n"RS
+
+typedef enum e_timecode
+{
+	SECONDS,
+	MILLISECONDS,
+	MICROSECONDS,
+}			t_timecode;
 
 typedef enum e_mtxcode
 {
@@ -59,37 +70,60 @@ typedef enum e_trdcode
 	DETACH,
 }			t_trdcode;
 
-
-typedef struct s_fork
+typedef enum e_phstatus
 {
-    t_mtx fork_mtx;
-    int     fork_id;
-}   t_fork;
+	EAT,
+	THINH,
+	DETACH,
+}			t_phstatus;
 
+//remplacer par structure t_mutex, qui pourrait aussi etre utilisee par write !
+// typedef struct s_fork
+// {
+//     t_mtx fork_mtx;
+//     int     fork_id;
+// 	bool	is_init;
+// }   t_fork;
+
+typedef struct s_mutex
+{
+    t_mtx	mtx;
+    int		mtx_id;
+	bool	is_init;
+}   t_mutex;
 
 typedef struct s_philo
 {
-    int				id; 
+    int				id;
+	bool			is_eating;
     int				meals_counter;
     bool			full; //=repus
     long			time_since_meal;
     t_fork			*first_fork;
     t_fork			*second_fork;
     pthread_t		thread_id; //un philosophe = un thread
+	bool			is_init;
     t_rules			*rules;
 }   t_philo;
 
+
 struct s_rules
 {
-    int    philo_nbr;
-    int    time_to_die;
-    int    time_to_eat;
-    int    time_to_sleep;
-    long            nbr_limit_meals; //-1 si aucune limite
-    long            timestamp_start; //heure precise du debut de la simulation
-    bool            end_simulation; //mort philo ou tous les philo sont full
+	int		philos_nbr;
+	long	time_to_die;
+	long	time_to_eat;
+	long	time_to_sleep;
+	int		nbr_limit_meals; //-1 si aucune limite
+	//mutex et threads
 	t_philo			*philos; //tableau de structure contenant tous les philosophes
 	t_fork			*forks; //tableau de structure contenant toutes les fourchettes
+	//utils
+	long	timestamp_start; //heure precise du debut de la simulation
+    //monitoring
+	bool	end_simulation; //mort philo ou tous les philo sont full
+	int		philos_full_nbr;
+	//mutex || struct synchronise
+	t_mutex	write_mtx;
 };
 
 // **libft_extension**
@@ -102,11 +136,13 @@ void    exit_error(char *strerr);
 void    close_error(t_rules *p_rules, char *strerr);
 
 
-void	safe_thread_handle(pthread_t *thread, void *(*routine)(void *),
-		void *data, t_trdcode trdcode);
+// void	safe_thread_handle(pthread_t *thread, void *(*routine)(void *),
+// 		void *data, t_trdcode trdcode);
 
-void	safe_mutex_handle(t_mtx *mutex, t_mtxcode mtxcode);
+// void	safe_mutex_handle(t_mtx *mutex, t_mtxcode mtxcode);
 
+void	handle_mutex_error(int status, t_mtxcode mtxcode);
+void	handle_thread_error(int status, t_trdcode trdcode);
 
 
 
