@@ -89,7 +89,7 @@ typedef struct s_mutex
 {
     t_mtx	mtx;
     int		mtx_id;
-	bool	is_init;
+	bool	mtx_is_init;
 }   t_mutex;
 
 typedef struct s_philo
@@ -99,8 +99,8 @@ typedef struct s_philo
     int				meals_counter;
     bool			full; //=repus
     long			time_since_meal;
-    t_fork			*first_fork;
-    t_fork			*second_fork;
+    t_mutex			*first_fork;
+    t_mutex			*second_fork;
     pthread_t		thread_id; //un philosophe = un thread
 	bool			is_init;
     t_rules			*rules;
@@ -116,14 +116,14 @@ struct s_rules
 	int		nbr_limit_meals; //-1 si aucune limite
 	//mutex et threads
 	t_philo			*philos; //tableau de structure contenant tous les philosophes
-	t_fork			*forks; //tableau de structure contenant toutes les fourchettes
+	t_mutex			*forks; //tableau de structure contenant toutes les fourchettes
 	//utils
 	long	timestamp_start; //heure precise du debut de la simulation
     //monitoring
 	bool	end_simulation; //mort philo ou tous les philo sont full
 	int		philos_full_nbr;
 	//mutex || struct synchronise
-	t_mutex	write_mtx;
+	t_mutex	write;
 };
 
 // **libft_extension**

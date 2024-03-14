@@ -44,7 +44,8 @@ void	philo_msg_mutex(t_rules *p_rules, t_philo philo, char *msg)
 
 void	print_error_mutex(t_rules *p_rules, char *strerr)
 {
-		if(write.is_init)
-		
+		if(p_rules->write.mtx_is_init) ////
+
+
 		ft_putstr_fd(strerr, 2);
 }
