@@ -7,6 +7,7 @@
 # include <stdbool.h>
 # include <pthread.h> // mutex init destroy lock unlock && threads create join detach 
 # include <errno.h>
+# include <string.h>
 # include <sys/time.h> //gettimeofday
 # include <limits.h> //INT_MAX INT_MIN
 # include "../libft/libft.h"
@@ -70,13 +71,6 @@ typedef enum e_trdcode
 	DETACH,
 }			t_trdcode;
 
-typedef enum e_phstatus
-{
-	EAT,
-	THINH,
-	DETACH,
-}			t_phstatus;
-
 //remplacer par structure t_mutex, qui pourrait aussi etre utilisee par write !
 // typedef struct s_fork
 // {
@@ -88,7 +82,7 @@ typedef enum e_phstatus
 typedef struct s_mutex
 {
     t_mtx	mtx;
-    int		mtx_id;
+    int		id; //utile seulement pour les forks ? j' ai l' impression que l' on a pas vraiment besoin d'identifier les forks avec un id
 	bool	mtx_is_init;
 }   t_mutex;
 
@@ -98,11 +92,11 @@ typedef struct s_philo
 	bool			is_eating;
     int				meals_counter;
     bool			full; //=repus
-    long			time_since_meal;
+    long			timestamp_lastmeal;
     t_mutex			*first_fork;
     t_mutex			*second_fork;
     pthread_t		thread_id; //un philosophe = un thread
-	bool			is_init;
+	bool			thread_is_init;
     t_rules			*rules;
 }   t_philo;
 
@@ -120,6 +114,7 @@ struct s_rules
 	//utils
 	long	timestamp_start; //heure precise du debut de la simulation
     //monitoring
+	bool	ready_to_eat;
 	bool	end_simulation; //mort philo ou tous les philo sont full
 	int		philos_full_nbr;
 	//mutex || struct synchronise
@@ -127,26 +122,32 @@ struct s_rules
 };
 
 // **libft_extension**
-int  atoi_perr_positive_only(const char *str, int *p_err);
-int  atoi_perr(const char *str, int *p_err);
+int		atoi_perr_positive_only(const char *str, int *p_err);
+int		atoi_perr(const char *str, int *p_err);
 void	*malloc_safe(size_t bytes, void *tofree, char *strerr, void (*f_cleanclose)(void *, char *));
 
 
+//print
+void	ft_putstr_fd(char *s, int fd);
+void	philo_msg_mutex(t_rules *p_rules, t_philo philo, char *msg);
+void	print_error_mutex(t_rules *p_rules, char *strerr);
+
+//error
 void    exit_error(char *strerr);
 void    close_error(t_rules *p_rules, char *strerr);
 
-
-// void	safe_thread_handle(pthread_t *thread, void *(*routine)(void *),
-// 		void *data, t_trdcode trdcode);
-
-// void	safe_mutex_handle(t_mtx *mutex, t_mtxcode mtxcode);
-
-void	handle_mutex_error(int status, t_mtxcode mtxcode);
-void	handle_thread_error(int status, t_trdcode trdcode);
+//threads & mutex
+void	safe_thread_handle(t_rules *p_rules, pthread_t *philo_thread, void *philo_data, t_trdcode trdcode);
+void	safe_mutex_handle(t_rules *p_rules, t_mtx *mutex, t_mtxcode mtxcode);
 
 
+//time utils
+long	get_curr_timestamp(t_timecode timecode);
+void	ft_usleep(long u_towait);
+long	get_elapsed_time_ms(long timestamp_start);
 
-
+void	*dinner_loop(void *philo_data);
+void	monitor_dinner(t_rules	*p_rules);
 
 
 

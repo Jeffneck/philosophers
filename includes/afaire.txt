@@ -22,3 +22,6 @@ on cree tous les mutex , Si err appel a destroy_all_mutex
 on cree tous les threads philos,
 
 routine_philo va alterner, eat, sleep, think...
+
+
+que se passe t il 

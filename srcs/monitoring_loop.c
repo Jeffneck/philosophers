@@ -1,34 +1,50 @@
 # include "../includes/philosophers.h"
 
-void	end_simulation(t_rules *p_rules)
+bool	one_philo_died(t_rules *p_rules)
 {
-	p_rules->end_simulation = true;
+	
+	int		i;
+	t_philo philo;
+
+	i = -1;
+	while(++i < p_rules->philos_nbr)
+	{
+		philo = p_rules->philos[i];
+		if(philo.is_eating == false 
+			&& philo.timestamp_lastmeal - p_rules->timestamp_start > p_rules->time_to_die)
+		{
+			philo_msg_mutex(p_rules, philo, DIED_MSG);
+			return (1);
+		}
+	}
+	return (0);
 }
 
-void	*monitoring_loop(void *void_p_rules)
+bool	everyone_is_full(t_rules *p_rules)
 {
-	t_rules	*p_rules;
-	t_philo *philos;
 	int		i;
+	int		nb_full;
 
-	p_rules = (t_rules *)void_p_rules;
-	philos = p_rules->philos;
-	while(p_rules->end_simulation == false)
+	i = -1;
+	nb_full = 0;
+	while(++i < p_rules->philos_nbr)
 	{
-		i = 0;
-		while(i < p_rules->philos_nbr)
-		{
-			if(philos[i].is_eating == false && philos[i].time_since_meal > p_rules->time_to_die)
-			{
-				print_msg_mutex()
-				end_simulation();
-			}
+		if (p_rules->philos[i].full == true)
+			nb_full++;
+	}
+	if (nb_full == p_rules->philos_full_nbr)
+		return (1);
+	return (0);
+}
 
-			if(philos[i].full == true)
-		}
-		if (p_rules->philos_full_nbr == p_rules->philos_nbr)
+void	monitor_dinner(t_rules	*p_rules)
+{
+	while(true)
+	{
+		if(one_philo_died || everyone_is_full)
 		{
-
+			p_rules->end_simulation = true;
+			return ;
 		}
 	}
 }

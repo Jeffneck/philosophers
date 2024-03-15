@@ -1,6 +1,6 @@
 # include "../../includes/philosophers.h"
 
-long	get_timestamp(t_timecode timecode)
+long	get_curr_timestamp(t_timecode timecode)
 {
 	struct timeval timestamp;
 	gettimeofday(&timestamp, NULL);
@@ -12,24 +12,24 @@ long	get_timestamp(t_timecode timecode)
 		return (timestamp.tv_sec + timestamp.tv_usec / 1e6);
 }
 
-void	ft_usleep(long time_towait, t_rules *p_rules)
+void	ft_usleep(long u_towait)
 {
 	long	start;
 	long	time_remaining;
 
-	start = get_timestamp(MICROSECONDS);
-	while(get_timestamp(MICROSECONDS) - start < time_towait)
+	start = get_curr_timestamp(MICROSECONDS);
+	while(get_curr_timestamp(MICROSECONDS) - start < u_towait)
 	{
 		
-		time_remaining = get_timestamp(MICROSECONDS) - start;
+		time_remaining = get_curr_timestamp(MICROSECONDS) - start;
 		if(time_remaining > 1e4)
 			usleep(time_remaining / 2);
-		while(get_timestamp(MICROSECONDS) - start < time_towait)
+		while(get_curr_timestamp(MICROSECONDS) - start < u_towait)
 				;
 	}
 }
 
-long	get_simulation_time_ms(long timestamp_start)
+long	get_elapsed_time_ms(long timestamp_start)
 {
-	return(get_timestamp(MILLISECONDS) - timestamp_start);
+	return(get_curr_timestamp(MILLISECONDS) - timestamp_start);
 }
