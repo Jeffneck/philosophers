@@ -8,28 +8,30 @@ CFLAGS = -Werror -Wall -Wextra -g3
 
 RM = rm -rf
 
-SRCS =  srcs/
+SRCS =  srcs/main.c \
+	srcs/dinner_loop.c \
+	srcs/monitor_dinner.c \
+	srcs/utils/error_utils.c \
+	srcs/utils/mutex_safe.c \
+	srcs/utils/print_msg_mutex.c \
+	srcs/utils/thread_safe.c \
+	srcs/utils/time_utils.c \
+	srcs/libft_ext/atoi_perr.c \
+	srcs/libft_ext/calloc_safe.c \
 
 
 OBJS = ${SRCS:.c=.o}
 
-LIBFT_DIR = libft
-LIBFT_A = libft/libft.a
 _CLEAR	= \033[0K\r\c
 _OK	= [\033[32mOK\033[0m]
 
 all : force $(NAME)
 
-$(LIBFT_A): libft/libft.h
-	@echo "[..] libft... compiling \r\c"
-	@$(MAKE) -C $(LIBFT_DIR) -s
-	@echo "$(_CLEAR)"
-
-${NAME}: ${OBJS} $(LIBFT_A)
+${NAME}: ${OBJS}
 	@${CC} ${CFLAGS} -g3 -I include -I libft/ -o $@ $^ -Llibft -lft -lreadline
 	@echo "$(_OK) $(NAME) compiled"
 
-${NAME_BONUS}: ${OBJS} $(LIBFT_A)
+${NAME_BONUS}: ${OBJS}
 	@${CC} ${CFLAGS} -g3 -I include -I libft/ -o $@ $^ -Llibft -lft -lreadline
 	@echo "$(_OK) $(NAME_BONUS) compiled"
 
@@ -52,8 +54,6 @@ fclean : clean
 	@$(RM) $(NAME_BONUS)
 
 re : fclean all
-
-bonus : force $(NAME_BONUS)
 
 .PHONY: all clean fclean re force bonus
 

@@ -10,7 +10,7 @@
 # include <string.h>
 # include <sys/time.h> //gettimeofday
 # include <limits.h> //INT_MAX INT_MIN
-# include "../libft/libft.h"
+// # include "../libft/libft.h"
 
 
 # ifndef MAX_PHILO_NBR
@@ -148,6 +148,9 @@ long	get_elapsed_time_ms(long timestamp_start);
 
 void	*dinner_loop(void *philo_data);
 void	monitor_dinner(t_rules	*p_rules);
+void    dinner_end(t_rules *p_rules);
+
+
 
 
 

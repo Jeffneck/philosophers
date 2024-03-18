@@ -24,13 +24,14 @@ static void	philo_eat(t_rules	*p_rules, t_philo philo)
 	safe_mutex_handle(p_rules, &(philo.second_fork), LOCK);
 	philo.is_eating = 1;
 	philo_msg_mutex(p_rules, philo, EAT_MSG);
-	philo.timestamp_lastmeal = get_curr_timestamp(MILLISECONDS);
-	ft_usleep(p_rules->time_to_eat * 1e3);
+	philo.timestamp_lastmeal = get_curr_timestamp(MILLISECONDS);//tout mettre en microsec plutot ?
+	ft_usleep(p_rules->time_to_eat * 1e3);//si en microsec, calcul non necessaire
 	safe_mutex_handle(p_rules, &(philo.first_fork), UNLOCK);
 	safe_mutex_handle(p_rules, &(philo.second_fork), UNLOCK);
 	philo.is_eating = 0;
 	philo.meals_counter++;
-	// if()
+	if(philo.meals_counter == p_rules->nbr_limit_meals)
+		philo.full = true;
 }
 
 void	*dinner_loop(void *philo_data)

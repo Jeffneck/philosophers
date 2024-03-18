@@ -41,10 +41,8 @@ void	monitor_dinner(t_rules	*p_rules)
 {
 	while(true)
 	{
+		//si on souhaite un monitoring plus efficace on peut faire un thread pour chaque verification.
 		if(one_philo_died || everyone_is_full)
-		{
-			p_rules->end_simulation = true;
 			return ;
-		}
 	}
 }

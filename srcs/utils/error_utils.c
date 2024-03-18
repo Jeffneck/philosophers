@@ -1,8 +1,9 @@
 # include "../../includes/philosophers.h"
 //utiliser print_error_mutex dans exit error
-// void    exit_error(char *strerr)
-// {
-//     ft_printf(R"%s\n"RS, strerr);
-//     exit(EXIT_FAILURE);
-// }
+void    close_error(t_rules * p_rules, char *strerr)
+{
+    print_error_mutex(p_rules, strerr);
+    dinner_end(p_rules);
+    exit(EXIT_FAILURE);
+}
 
