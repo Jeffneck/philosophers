@@ -1,10 +1,11 @@
 # include "../../includes/philosophers.h"
 
 //en cas d' erreur avant la creation des mutex .., on peut utiliser directement putstr_fd
+
 void	ft_putstr_fd(char *s, int fd)
 {
 	if (s != NULL)
-		write(fd, s, ft_strlen(s));
+		write(fd, s, strlen(s));
 }
 
 void	philo_msg_mutex(t_rules *p_rules, t_philo philo, char *msg)
@@ -12,8 +13,8 @@ void	philo_msg_mutex(t_rules *p_rules, t_philo philo, char *msg)
 	// if(!msg)
 	// 	return ;
 	safe_mutex_handle(p_rules, &(p_rules->write.mtx), LOCK);
-	printf(msg, get_timestamp(MILLISECONDS) - p_rules->timestamp_start, philo.id);
-	safe_mutex_handle(p_rules, &(p_rules->write.mtx), LOCK);
+	printf(msg, get_curr_timestamp(MILLISECONDS) - p_rules->timestamp_start, philo.id);
+	safe_mutex_handle(p_rules, &(p_rules->write.mtx), UNLOCK);
 	
 }
 

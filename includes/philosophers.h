@@ -44,10 +44,11 @@ typedef struct s_rules t_rules;
 
 # define MALLOC_E "memory allocation error detected, program ended\n"
 
-# define EAT_MSG "%6ld"W" %d" G" is eating\n"RS
-# define SLEEP_MSG "%6ld"W" %d" Y" is sleeping\n"RS
-# define THINK_MSG "%6ld"W" %d" B" is thinking\n"RS
-# define DIED_MSG "%6ld"W" %d" R" died\n"RS
+# define TOOK_FORK_MSG "%ld %d has taken a fork\n"
+# define EAT_MSG "%ld %d is eating\n"
+# define SLEEP_MSG "%ld %d is sleeping\n"
+# define THINK_MSG "%ld %d is thinking\n"
+# define DIED_MSG "%ld %d died\n"
 
 typedef enum e_timecode
 {
@@ -116,7 +117,7 @@ struct s_rules
     //monitoring
 	bool	ready_to_eat;
 	bool	end_simulation; //mort philo ou tous les philo sont full
-	int		philos_full_nbr;
+	// int		philos_full_nbr;
 	//mutex || struct synchronise
 	t_mutex	write;
 };
@@ -124,8 +125,7 @@ struct s_rules
 // **libft_extension**
 int		atoi_perr_positive_only(const char *str, int *p_err);
 int		atoi_perr(const char *str, int *p_err);
-void	*malloc_safe(size_t bytes, void *tofree, char *strerr, void (*f_cleanclose)(void *, char *));
-
+void	*ft_calloc(size_t nmemb, size_t size);
 
 //print
 void	ft_putstr_fd(char *s, int fd);
@@ -150,7 +150,12 @@ void	*dinner_loop(void *philo_data);
 void	monitor_dinner(t_rules	*p_rules);
 void    dinner_end(t_rules *p_rules);
 
+//init 
+void    init_structs(t_rules *p_rules, char ** av);
 
+//init utils
+void	check_rules_max_values(t_rules *p_rules);
+void	transform_rules_times_to_ms(t_rules *p_rules);
 
 
 
