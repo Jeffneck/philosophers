@@ -83,17 +83,16 @@ typedef enum e_trdcode
 typedef struct s_mutex
 {
     t_mtx	mtx;
-    int		id; //utile seulement pour les forks ? j' ai l' impression que l' on a pas vraiment besoin d'identifier les forks avec un id
 	bool	mtx_is_init;
 }   t_mutex;
 
 typedef struct s_philo
 {
     int				id;
-	bool			is_eating;
+	// bool			is_eating;
     int				meals_counter;
-    bool			full; //=repus
-    long			timestamp_lastmeal;
+    bool			full; //meal_lock
+    long			timestamp_lastmeal; //meal lock
     t_mutex			*first_fork;
     t_mutex			*second_fork;
     pthread_t		thread_id; //un philosophe = un thread
@@ -115,9 +114,10 @@ struct s_rules
 	//utils
 	long	timestamp_start; //heure precise du debut de la simulation
     //monitoring
-	bool	ready_to_eat;
+	bool	ready_to_eat; //doit etre mutex si je l'utilise, tester sans quand tout sera ok
+	t_mutex end_lock;
 	bool	end_simulation; //mort philo ou tous les philo sont full
-	// int		philos_full_nbr;
+	t_mutex meal_lock; //verif full et timestamp_lastmeal;
 	//mutex || struct synchronise
 	t_mutex	write;
 };

@@ -19,7 +19,7 @@ static void	dinner_start(t_rules *p_rules)
 	p_rules->ready_to_eat = true;
 }
 
-void    dinner_end(t_rules *p_rules)
+void    dinner_end(t_rules *p_rules) //etape de clean 
 {
     printf("%ld dinner_end\n", get_elapsed_time_ms(p_rules->timestamp_start));//
 	fflush(stdout);//
@@ -30,7 +30,7 @@ void    dinner_end(t_rules *p_rules)
 	philos = p_rules->philos;
 	forks = p_rules->forks;
     // stopper les actions de tous les threads
-    p_rules->end_simulation = true;
+    // p_rules->end_simulation = true;
     //join tous les threads
 	if(philos)
 	{

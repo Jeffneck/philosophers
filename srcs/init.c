@@ -3,15 +3,16 @@
 static void	assign_forks(t_philo *philo, t_mutex *forks)
 {
 	//meilleure strat d' inverser l' assignation en fonction des nb pairs ?
-	printf("philo nbr = %d\n", philo->rules->philos_nbr);//
 	fflush(stdout); //
 	if (philo->id % 2 == 0)
 	{
+		printf("philo id = %d first fork id %d second fork id %d\n", philo->id, philo->id % philo->rules->philos_nbr, philo->id - 1);/////
 		philo->first_fork = &(forks[philo->id % philo->rules->philos_nbr]);
 		philo->second_fork = &(forks[philo->id - 1]);
 	}
 	else
 	{
+		printf("philo id = %d first fork id %d second fork id %d\n", philo->id - 1, philo->id, philo->id % philo->rules->philos_nbr);/////
 		philo->first_fork = &(forks[philo->id - 1]);
 		philo->second_fork = &(forks[philo->id]);
 	}
@@ -32,33 +33,27 @@ static void    init_philos(t_rules *p_rules, t_philo *philos)
 		philos[i].rules = p_rules;
 		philos[i].meals_counter = 0;
 		philos[i].full = false;
-		philos[i].is_eating = false;
+		// philos[i].is_eating = false;//inutile a priori
 		assign_forks(&philos[i], p_rules->forks);
 	}
 }
 
+static void    init_mutex(t_rules *p_rules, t_mutex *mutex)
+{
+
+		mutex->mtx_is_init = false;
+		safe_mutex_handle(p_rules, &(mutex->mtx), INIT);
+		mutex->mtx_is_init = true;
+}
 static void    init_forks(t_rules *p_rules, t_mutex *forks)
 {
 	int	i;
 
 	i = -1;
 	while(++i < p_rules->philos_nbr)
-	{
-		forks[i].mtx_is_init = false;
-		safe_mutex_handle(p_rules, &(forks[i].mtx), INIT);
-		forks[i].mtx_is_init = true;
-		forks[i].id = i;
-	}
+		init_mutex(p_rules, &forks[i]);
 }
 
-static void    init_write_mutex(t_rules *p_rules, t_mutex *write)
-{
-
-		write->mtx_is_init = false;
-		safe_mutex_handle(p_rules, &(write->mtx), INIT);
-		write->mtx_is_init = true;
-		write->id = 0;
-}
 
 static void    init_rules_from_av(t_rules *p_rules, char ** av)
 {
@@ -86,6 +81,7 @@ static void    init_rules_from_av(t_rules *p_rules, char ** av)
 	p_rules->ready_to_eat = false;
 }
 
+//mettre dans main
 void    init_structs(t_rules *p_rules, char ** av)
 {
 	int	nb;
@@ -98,8 +94,9 @@ void    init_structs(t_rules *p_rules, char ** av)
 	p_rules->forks = ft_calloc(nb, sizeof(t_mutex)); //ajouter un philo == NULL pour marquer la fin du tableau de struct ?
 	if (!p_rules->philos || !p_rules->forks)
 		close_error(p_rules, MALLOC_E);
-	init_write_mutex(p_rules, &p_rules->write);//faire
-	// init_end_mutex(p_rules, &p_rules->write);//faire
-    init_forks(p_rules, p_rules->forks);
+	init_mutex(p_rules, &p_rules->write);
+	init_mutex(p_rules, &p_rules->end_lock);
+	init_mutex(p_rules, &p_rules->meal_lock);
+	init_forks(p_rules, p_rules->forks);
 	init_philos(p_rules, p_rules->philos);
 }
