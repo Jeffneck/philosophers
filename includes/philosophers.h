@@ -142,7 +142,7 @@ void	safe_mutex_handle(t_rules *p_rules, t_mtx *mutex, t_mtxcode mtxcode);
 
 
 //time utils
-long	get_curr_timestamp(t_timecode timecode);
+long	get_curr_timestamp(void);
 void	ft_usleep(long u_towait);
 long	get_elapsed_time_ms(long timestamp_start);
 

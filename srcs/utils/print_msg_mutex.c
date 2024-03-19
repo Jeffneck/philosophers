@@ -10,10 +10,15 @@ void	ft_putstr_fd(char *s, int fd)
 
 void	philo_msg_mutex(t_rules *p_rules, t_philo philo, char *msg)
 {
-	// if(!msg)
-	// 	return ;
 	safe_mutex_handle(p_rules, &(p_rules->write.mtx), LOCK);
-	printf(msg, get_curr_timestamp(MILLISECONDS) - p_rules->timestamp_start, philo.id);
+	//eviter d' afficher un message de mort puis un message de philo qui mange
+	// ft_usleep(100);
+	if(p_rules->end_simulation == true)
+	{
+		safe_mutex_handle(p_rules, &(p_rules->write.mtx), UNLOCK);
+		return ;
+	}
+	printf(msg, get_elapsed_time_ms(p_rules->timestamp_start), philo.id);
 	safe_mutex_handle(p_rules, &(p_rules->write.mtx), UNLOCK);
 	
 }

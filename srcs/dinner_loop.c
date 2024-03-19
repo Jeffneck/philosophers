@@ -13,7 +13,7 @@ static void	philo_sleep(t_rules	*p_rules, t_philo *philo)
 	if(p_rules->end_simulation == true)
 		return ;
 	philo_msg_mutex(p_rules, *philo, SLEEP_MSG);
-	ft_usleep(p_rules->time_to_sleep);
+	ft_usleep(p_rules->time_to_sleep * 1e3);
 }
 
 static void	philo_eat(t_rules	*p_rules, t_philo *philo)
@@ -27,8 +27,8 @@ static void	philo_eat(t_rules	*p_rules, t_philo *philo)
 	//verifier ici s' il est dead ?
 	philo->is_eating = 1;
 	philo_msg_mutex(p_rules, *philo, EAT_MSG);
-	philo->timestamp_lastmeal = get_curr_timestamp(MILLISECONDS);//tout mettre en microsec plutot ?
-	ft_usleep(p_rules->time_to_eat);//si en microsec, calcul non necessaire
+	philo->timestamp_lastmeal = get_curr_timestamp();//tout mettre en microsec plutot ?
+	ft_usleep(p_rules->time_to_eat * 1e3);
 	philo->is_eating = 0;
 	safe_mutex_handle(p_rules, &(philo->first_fork->mtx), UNLOCK);
 	safe_mutex_handle(p_rules, &(philo->second_fork->mtx), UNLOCK);

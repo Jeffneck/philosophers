@@ -9,7 +9,7 @@ static void	dinner_start(t_rules *p_rules)
 
 	philos = p_rules->philos;
 	i = -1;
-	p_rules->timestamp_start = get_curr_timestamp(MILLISECONDS);
+	p_rules->timestamp_start = get_curr_timestamp();
 	while(++i < p_rules->philos_nbr)
 	{
 		philos[i].timestamp_lastmeal = p_rules->timestamp_start;
@@ -21,7 +21,9 @@ static void	dinner_start(t_rules *p_rules)
 
 void    dinner_end(t_rules *p_rules)
 {
-    int i;
+    printf("%ld dinner_end\n", get_elapsed_time_ms(p_rules->timestamp_start));//
+	fflush(stdout);//
+	int i;
 	t_philo	*philos;
 	t_mutex 	*forks;
 

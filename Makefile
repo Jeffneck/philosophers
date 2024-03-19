@@ -2,9 +2,11 @@
 
 NAME = philosophers
 
+NAME_SHORT = philo
+
 CC = cc
 
-CFLAGS = -Werror -Wall -Wextra -g3
+CFLAGS = -Werror -Wall -Wextra -pthread -g3
 
 RM = rm -rf
 
@@ -30,7 +32,7 @@ _OK	= [\033[32mOK\033[0m]
 all : $(NAME)
 
 ${NAME}: ${OBJS}
-	@${CC} ${CFLAGS} -g3 -Iincludes ${OBJS} -o ${NAME}
+	@${CC} ${CFLAGS} -Iincludes ${OBJS} -o ${NAME}
 	@echo "$(_OK) $(NAME) compiled"
 
 
@@ -40,14 +42,10 @@ ${NAME}: ${OBJS}
 	@echo "$(_CLEAR)"
 
 clean :
-	@$(MAKE) -C $(LIBFT_DIR) clean -s
 	@$(RM) $(OBJS)
-	@$(RM) $(OBJS_BONUS)
 
 fclean : clean
-	@$(MAKE) -C $(LIBFT_DIR) fclean -s
 	@$(RM) $(NAME)
-	@$(RM) $(NAME_BONUS)
 
 re : fclean all
 

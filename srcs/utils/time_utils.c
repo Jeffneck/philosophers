@@ -1,14 +1,14 @@
 # include "../../includes/philosophers.h"
 
-long	get_curr_timestamp(t_timecode timecode)
+long	get_curr_timestamp(void)
 {
 	struct timeval timestamp;
 	gettimeofday(&timestamp, NULL);
-	if(timecode == MICROSECONDS)
-		return (timestamp.tv_sec * 1e6 + timestamp.tv_usec);
-	if(timecode == MILLISECONDS)
-		return (timestamp.tv_sec * 1e3 + timestamp.tv_usec / 1e3);
-	return (timestamp.tv_sec + timestamp.tv_usec / 1e6);
+	// if(timecode == MICROSECONDS)
+	// 	return (timestamp.tv_sec * 1e6 + timestamp.tv_usec);
+	// if(timecode == MILLISECONDS)
+	return (timestamp.tv_sec * 1e3 + timestamp.tv_usec / 1e3);
+	// return (timestamp.tv_sec + timestamp.tv_usec / 1e6);
 }
 
 void	ft_usleep(long u_towait)
@@ -31,5 +31,5 @@ void	ft_usleep(long u_towait)
 
 long	get_elapsed_time_ms(long timestamp_start)
 {
-	return(get_curr_timestamp(MILLISECONDS) - timestamp_start);
+	return(get_curr_timestamp() - timestamp_start);
 }

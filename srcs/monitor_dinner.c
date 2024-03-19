@@ -11,8 +11,11 @@ bool	one_philo_died(t_rules *p_rules)
 	{
 		philo = p_rules->philos[i];
 		// printf("lastmeal %ld, start %ld, time die %ld\n",philo.timestamp_lastmeal,  p_rules->timestamp_start, p_rules->time_to_die);
+		printf("%ld  %d DIED ? %ld\n", get_elapsed_time_ms(p_rules->timestamp_start),philo.id, get_elapsed_time_ms(philo.timestamp_lastmeal));
 		// if(philo.is_eating == false && (philo.timestamp_lastmeal - p_rules->timestamp_start) > p_rules->time_to_die / 1e3)
-		if((philo.timestamp_lastmeal - p_rules->timestamp_start) > p_rules->time_to_die / 1e3)
+		// if((philo.timestamp_lastmeal - p_rules->timestamp_start) > p_rules->time_to_die / 1e3)
+		// if((get_curr_timestamp() - philo.timestamp_lastmeal) > p_rules->time_to_die )
+		if(get_elapsed_time_ms(philo.timestamp_lastmeal) > p_rules->time_to_die )
 		{
 			// write(1, "a\n", 2);//
 			philo_msg_mutex(p_rules, philo, DIED_MSG);
@@ -46,6 +49,6 @@ void	monitor_dinner(t_rules	*p_rules)
 		//si on souhaite un monitoring plus efficace on peut faire un thread pour chaque verification.
 		if(one_philo_died(p_rules) || everyone_is_full(p_rules))
 			return ;
-		ft_usleep(1);
+		ft_usleep(1e3);//10e3
 	}
 }

@@ -5,9 +5,9 @@ static void	assign_forks(t_philo *philo, t_mutex *forks)
 	//meilleure strat d' inverser l' assignation en fonction des nb pairs ?
 	printf("philo nbr = %d\n", philo->rules->philos_nbr);//
 	fflush(stdout); //
-	if (philo->id == philo->rules->philos_nbr)
+	if (philo->id % 2 == 0)
 	{
-		philo->first_fork = &(forks[0]);
+		philo->first_fork = &(forks[philo->id % philo->rules->philos_nbr]);
 		philo->second_fork = &(forks[philo->id - 1]);
 	}
 	else
@@ -93,12 +93,13 @@ void    init_structs(t_rules *p_rules, char ** av)
 	init_rules_from_av(p_rules, av);
 	nb = p_rules->philos_nbr;
 	check_rules_max_values(p_rules);
-	transform_rules_times_to_ms(p_rules);
+	// transform_rules_times_to_ms(p_rules);//on les met en microsec ce qui n' est pas utile 
 	p_rules->philos = ft_calloc(nb, sizeof(t_philo)); //ajouter un philo == NULL pour marquer la fin du tableau de struct ?
 	p_rules->forks = ft_calloc(nb, sizeof(t_mutex)); //ajouter un philo == NULL pour marquer la fin du tableau de struct ?
 	if (!p_rules->philos || !p_rules->forks)
 		close_error(p_rules, MALLOC_E);
 	init_write_mutex(p_rules, &p_rules->write);//faire
+	// init_end_mutex(p_rules, &p_rules->write);//faire
     init_forks(p_rules, p_rules->forks);
 	init_philos(p_rules, p_rules->philos);
 }

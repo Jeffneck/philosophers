@@ -10,21 +10,21 @@ static void	handle_mutex_error(t_rules *p_rules, int funct_return, t_mtxcode mtx
 	if (0 == funct_return)
 		return ;
 	if (EINVAL == funct_return && (LOCK == mtxcode || UNLOCK == mtxcode))
-		close_error(p_rules, "The value specified by mutex is invalid");
+		close_error(p_rules, "The value specified by mutex is invalid\n");
 	else if (EINVAL == funct_return && INIT == mtxcode)
-		close_error(p_rules, "The value specified by attr is invalid.");
+		close_error(p_rules, "The value specified by attr is invalid.\n");
 	else if (EDEADLK == funct_return)
 		close_error(p_rules, "A deadlock would occur if the thread "
-			"blocked waiting for mutex.");
+			"blocked waiting for mutex.\n");
 	else if (EPERM == funct_return)
-		close_error(p_rules, "The current thread does not hold a lock on mutex.");
+		close_error(p_rules, "The current thread does not hold a lock on mutex.\n");
 	else if (ENOMEM == funct_return)
 		close_error(p_rules, "The process cannot allocate enough memory"
-			" to create another mutex.");
+			" to create another mutex.\n");
 	else if (EBUSY == funct_return)
-		close_error(p_rules, "Mutex is locked");
+		close_error(p_rules, "Mutex is locked\n");
 		// remplacer les exit par une autre fonction, soit cleanclose soit print msg
-	(void)p_rules;//remplacer par une bonne gestion d' erreurs
+	// (void)p_rules;//remplacer par une bonne gestion d' erreurs
 }
 
 //on pourrait techniquement se passer de cette fonction
