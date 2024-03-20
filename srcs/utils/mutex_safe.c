@@ -27,15 +27,32 @@ static void	handle_mutex_error(t_rules *p_rules, int funct_return, t_mtxcode mtx
 	// (void)p_rules;//remplacer par une bonne gestion d' erreurs
 }
 
+bool	get_locked_bool(t_rules *p_rules, t_mutex *lock, bool *to_get)
+{
+	bool ret;
+	safe_mutex_handle(p_rules, &(lock->mtx), LOCK);
+	ret = *to_get;
+	safe_mutex_handle(p_rules, &(lock->mtx), LOCK);
+	return(ret);
+}
+
+void	set_locked_bool(t_mutex *lock, bool *to_set, bool value)
+{
+	safe_mutex_handle(p_rules, &(lock->mtx), LOCK);
+	*to_set = value;
+	safe_mutex_handle(p_rules, &(lock->mtx), LOCK);
+}
+
 //on pourrait techniquement se passer de cette fonction
-void	safe_mutex_handle(t_rules *p_rules, t_mtx *mutex, t_mtxcode mtxcode)
+void	safe_mutex_handle(t_rules *p_rules, t_mtx *mutex, t_mtxcode mtxcode) //retirer p_rules car contenu dans mutex et donner t_mutex au lieu de t_mtx
 {
 	if (LOCK == mtxcode)
 		handle_mutex_error(p_rules, pthread_mutex_lock(mutex), mtxcode);
 	else if (UNLOCK == mtxcode)
 		handle_mutex_error(p_rules, pthread_mutex_unlock(mutex), mtxcode);
 	else if (INIT == mtxcode)
-		handle_mutex_error(p_rules, pthread_mutex_init(mutex, NULL), mtxcode);
-	else if (DESTROY == mtxcode)
+		handle_mutex_error(p_rules, pthread_mutex_init(mutex, NULL), mtxcode);//ajouter mutex.is_init = true ici est + smart
+	else if (DESTROY == mtxcode) //verifier ici si  mutex.is_init = true ici est + smart
 		handle_mutex_error(p_rules, pthread_mutex_destroy(mutex), mtxcode);
 }
+

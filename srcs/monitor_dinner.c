@@ -47,17 +47,14 @@ void	monitor_dinner(t_rules	*p_rules)
 	while(true)
 	{
 		//si on souhaite un monitoring plus efficace on peut faire un thread pour chaque verification.
-		safe_mutex_handle(p_rules, &(p_rules->meal_lock.mtx), LOCK);
+		// safe_mutex_handle(p_rules, &(p_rules->meal_lock.mtx), LOCK);
 		
 		if(one_philo_died(p_rules) || everyone_is_full(p_rules))
 		{
-			safe_mutex_handle(p_rules, &(p_rules->end_lock.mtx), LOCK);
-			p_rules->end_simulation = true;
-			safe_mutex_handle(p_rules, &(p_rules->end_lock.mtx), UNLOCK);
-			safe_mutex_handle(p_rules, &(p_rules->meal_lock), UNLOCK);
+			set_locked_bool(p_rules->action_lock, dinner_end, true);
 			return ;
 		}
-		safe_mutex_handle(p_rules, &(p_rules->meal_lock), UNLOCK);
+		// safe_mutex_handle(p_rules, &(p_rules->meal_lock.mtx), UNLOCK);
 		ft_usleep(1e3);//entre 1 et 10e3
 	}
 }

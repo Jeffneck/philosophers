@@ -19,6 +19,12 @@ static void	dinner_start(t_rules *p_rules)
 	p_rules->ready_to_eat = true;
 }
 
+destroy_initialized_mtx(t_rules *p_rules, t_mutex *mutex)
+{
+	if(mutex->mtx_is_init == true)
+		safe_mutex_handle(p_rules, &(mutex->mtx), DESTROY);
+}
+
 void    dinner_end(t_rules *p_rules) //etape de clean 
 {
     printf("%ld dinner_end\n", get_elapsed_time_ms(p_rules->timestamp_start));//
@@ -44,10 +50,12 @@ void    dinner_end(t_rules *p_rules) //etape de clean
 	{
 		i = -1;
 		while(++i < p_rules->philos_nbr && forks[i].mtx_is_init == true)
-			safe_mutex_handle(p_rules, &(forks[i].mtx), DESTROY);
-		safe_mutex_handle(p_rules, &(p_rules->write.mtx), DESTROY);
+			destroy_initialized_mtx(p_rules, &forks[i]);
 		free(forks);
 	}
+		destroy_initialized_mtx(p_rules, &write_lock);
+		destroy_initialized_mtx(p_rules, &meal_lock);
+		destroy_initialized_mtx(p_rules, &end_lock);
 }
 
 int     main(int ac, char **av) //penser au philo seul ! et au cas impossible des le debut ?

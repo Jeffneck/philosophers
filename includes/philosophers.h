@@ -50,6 +50,7 @@ typedef struct s_rules t_rules;
 # define THINK_MSG "%ld %d is thinking\n"
 # define DIED_MSG "%ld %d died\n"
 
+
 typedef enum e_timecode
 {
 	SECONDS,
@@ -84,6 +85,7 @@ typedef struct s_mutex
 {
     t_mtx	mtx;
 	bool	mtx_is_init;
+	t_rules *rules;
 }   t_mutex;
 
 typedef struct s_philo
@@ -91,10 +93,11 @@ typedef struct s_philo
     int				id;
 	// bool			is_eating;
     int				meals_counter;
-    bool			full; //meal_lock
     long			timestamp_lastmeal; //meal lock
     t_mutex			*first_fork;
     t_mutex			*second_fork;
+	t_mutex			philo_lock; //acces a var full
+    bool			full; //meal_lock
     pthread_t		thread_id; //un philosophe = un thread
 	bool			thread_is_init;
     t_rules			*rules;
@@ -114,12 +117,12 @@ struct s_rules
 	//utils
 	long	timestamp_start; //heure precise du debut de la simulation
     //monitoring
-	bool	ready_to_eat; //doit etre mutex si je l'utilise, tester sans quand tout sera ok
-	t_mutex end_lock;
-	bool	end_simulation; //mort philo ou tous les philo sont full
-	t_mutex meal_lock; //verif full et timestamp_lastmeal;
+	t_mutex action_lock; // var dinner_ready && dinner_end
+	bool	dinner_ready;
+	bool	dinner_end; //mort philo ou tous les philo sont full
+	// t_mutex meal_lock; //verif full et timestamp_lastmeal;
 	//mutex || struct synchronise
-	t_mutex	write;
+	t_mutex	write_lock; //acces a stdout
 };
 
 // **libft_extension**
@@ -138,8 +141,11 @@ void    close_error(t_rules *p_rules, char *strerr);
 
 //threads & mutex
 void	safe_thread_handle(t_rules *p_rules, pthread_t *philo_thread, void *philo_data, t_trdcode trdcode);
-void	safe_mutex_handle(t_rules *p_rules, t_mtx *mutex, t_mtxcode mtxcode);
 
+
+void	safe_mutex_handle(t_rules *p_rules, t_mtx *mutex, t_mtxcode mtxcode);
+bool	get_locked_bool(t_rules *p_rules, t_mutex *lock, bool *to_get);
+void	set_locked_bool(t_rules *p_rules, t_mutex *lock, bool *to_set, bool value);
 
 //time utils
 long	get_curr_timestamp(void);
