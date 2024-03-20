@@ -12,17 +12,17 @@ bool	is_end_condition(t_rules *p_rules)
 	philos = p_rules->philos;
 	nb_full = 0;
 	is_dead = false;
-	while(++i < p_rules->philos_nbr && is_dead == false)
+	while(++i < p_rules->nb_phil && is_dead == false)
 	{
 		safe_mutex_handle(&(philos[i].philo_lock), LOCK);
-		is_dead = (get_elapsed_time_ms(philos[i].lastmeal) > p_rules->time_to_die);
+		is_dead = (get_elapsed_time_ms(philos[i].ts_lastmeal) > p_rules->ms_to_die);
 		if (philos[i].full == true)
 			nb_full++;
 		safe_mutex_handle(&(philos[i].philo_lock), LOCK);
 	}
 		if(is_dead == true) //time to die est accessible sans mutex ?
 			philo_msg_mutex(p_rules, philos[i], DIED_MSG);
-	return (is_dead || (nb_full == p_rules->philos_nbr));
+	return (is_dead || (nb_full == p_rules->nb_phil));
 }
 
 void	monitor_dinner(t_rules	*p_rules)

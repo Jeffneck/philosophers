@@ -33,10 +33,10 @@ void    dinner_end(t_rules *p_rules) //etape de clean
 	t_philo	*philos;
 	t_mutex 	*forks;
 
+    // stopper les actions de tous les threads
+	set_locked_bool(&p_rules->rules_lock, &p_rules->dinner_ended, true);
 	philos = p_rules->philos;
 	forks = p_rules->forks;
-    // stopper les actions de tous les threads
-    // p_rules->end_simulation = true;
     //join tous les threads
 	if(philos)
 	{

@@ -16,6 +16,7 @@ SRCS =  srcs/main.c \
 	srcs/monitor_dinner.c \
 	srcs/utils/error_utils.c \
 	srcs/utils/mutex_safe.c \
+	srcs/utils/mutex_access.c \
 	srcs/utils/print_msg_mutex.c \
 	srcs/utils/threads_safe.c \
 	srcs/utils/time_utils.c \

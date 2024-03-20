@@ -80,48 +80,55 @@ typedef enum e_trdcode
 //     int     fork_id;
 // 	bool	is_init;
 // }   t_fork;
-
+/*
+ts = timestamp
+th = thread
+*/
 typedef struct s_mutex
 {
-    t_mtx	mtx;
-	bool	mtx_is_init;
-	t_rules *rules;
+    pthread_mutex_t	mtx_id;
+	bool			is_lock;
+	bool			is_init;
+	t_rules			*rules;
 }   t_mutex;
+
+typedef struct s_thread
+{
+    pthread_t	thd_id;
+	bool		is_init;
+	t_rules 	*rules;
+}   t_thread;
 
 typedef struct s_philo
 {
     int				id;
-	// bool			is_eating;
-    int				meals_counter;
-    long			lastmeal; //meal lock
-    t_mutex			*first_fork;
-    t_mutex			*second_fork;
-	t_mutex			philo_lock; //acces a var full
-    bool			full; //meal_lock
-    pthread_t		thread_id; //un philosophe = un thread
-	bool			thread_is_init;
+    int				nb_meals;
+    t_mutex			*fst_fork;
+    t_mutex			*scd_fork;
+	t_mutex			philo_lock; //lock : full / ts_lastmeal
+    long			ts_lastmeal;
+    bool			full;
+    t_thread		thread;
     t_rules			*rules;
 }   t_philo;
 
 
 struct s_rules
 {
-	int		philos_nbr;
-	long	time_to_die;
-	long	time_to_eat;
-	long	time_to_sleep;
-	int		nbr_limit_meals; //-1 si aucune limite
+	int		nb_phil;
+	long	ms_to_die;
+	long	ms_to_eat;
+	long	ms_to_sleep;
+	int		max_meals; //-1 si aucune limite
 	//mutex et threads
 	t_philo			*philos; //tableau de structure contenant tous les philosophes
 	t_mutex			*forks; //tableau de structure contenant toutes les fourchettes
 	//utils
-	long	timestamp_start; //heure precise du debut de la simulation
+	long	ts_start; //heure precise du debut de la simulation
     //monitoring
 	t_mutex rules_lock; // var dinner_ready && dinner_end
 	bool	dinner_ready;
 	bool	dinner_ended; //mort philo ou tous les philo sont full
-	// t_mutex meal_lock; //verif full et timestamp_lastmeal;
-	//mutex || struct synchronise
 	t_mutex	write_lock; //acces a stdout
 };
 
@@ -142,15 +149,18 @@ void    close_error(t_rules *p_rules, char *strerr);
 //threads & mutex
 void	safe_thread_handle(t_philo *philo, t_trdcode trdcode);
 
-
-bool	get_locked_bool(t_mutex *mutex, bool *to_get);
-void	set_locked_bool(t_mutex *mutex, bool *to_set, bool value);
 void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode);
 
+//mutex access 
+bool	get_mtxbool(t_mutex *mutex, bool *to_get);
+void	set_mtxbool(t_mutex *mutex, bool *to_set, bool value);
+long	get_mtxlong(t_mutex *mutex, long *to_get);
+void	set_mtxlong(t_mutex *mutex, long *to_set, long value);
+
 //time utils
-long	get_curr_timestamp(void); //get_ms_timestamp
+long	get_ms_timestamp(void); //get_ms_timestamp
 void	ms_sleep(long ms); //ms_sleep(long ms);
-long	get_elapsed_time_ms(long timestamp_start); // get_ms_elapsed
+long	get_ms_elapsed(long ts_init); // get_ms_elapsed
 
 void	*dinner_loop(void *philo_data);
 void	monitor_dinner(t_rules	*p_rules);

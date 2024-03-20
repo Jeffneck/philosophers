@@ -31,10 +31,12 @@ static void	handle_thread_error(t_rules *p_rules, int status, t_trdcode trdcode)
 // void	safe_thread_handle(t_rules *p_rules, pthread_t *philo_thread, void *philo, t_trdcode trdcode)
 void	safe_thread_handle(t_philo *philo, t_trdcode trdcode)
 {
+	if(!philo)
+		return;
 	if (CREATE == trdcode)
-		handle_thread_error(philo->rules, pthread_create(&(philo->thread_id), NULL, dinner_loop, philo), trdcode);
+		handle_thread_error(philo->rules, pthread_create(&(philo->thread.thd_id), NULL, dinner_loop, philo), trdcode);
 	else if (JOIN == trdcode)
-		handle_thread_error(philo->rules, pthread_join(philo->thread_id, NULL), trdcode);
+		handle_thread_error(philo->rules, pthread_join(philo->thread.thd_id, NULL), trdcode);
 	else if (DETACH == trdcode)
-		handle_thread_error(philo->rules, pthread_detach(philo->thread_id), trdcode);
+		handle_thread_error(philo->rules, pthread_detach(philo->thread.thd_id), trdcode);
 }

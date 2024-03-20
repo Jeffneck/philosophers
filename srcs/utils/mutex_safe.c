@@ -27,37 +27,29 @@ static void	handle_mutex_error(t_rules *p_rules, int funct_return, t_mtxcode mtx
 	// (void)p_rules;//remplacer par une bonne gestion d' erreurs
 }
 
-bool	get_locked_bool(t_mutex *mutex, bool *to_get)
-{
-	bool ret;
-	safe_mutex_handle(mutex, LOCK);
-	ret = *to_get;
-	safe_mutex_handle(mutex, UNLOCK);
-	return(ret);
-}
-
-void	set_locked_bool(t_mutex *mutex, bool *to_set, bool value)
-{
-	safe_mutex_handle(mutex, LOCK);
-	*to_set = value;
-	safe_mutex_handle(mutex, LOCK);
-}
-
 void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode) //retirer p_rules car contenu dans mutex et donner t_mutex au lieu de t_mtx
 {
+	if(!mutex) //protege dans certains cas de closing
+		return;
 	if (LOCK == mtxcode)
+	{
 		handle_mutex_error(mutex->rules, pthread_mutex_lock(mutex), mtxcode);
-	else if (UNLOCK == mtxcode)
+		mutex->is_lock = true;
+	}
+	else if (UNLOCK == mtxcode && mutex->is_lock)
+	{
 		handle_mutex_error(mutex->rules, pthread_mutex_unlock(mutex), mtxcode);
+		mutex->is_lock == false;
+	}
 	else if (INIT == mtxcode)
 	{
 		handle_mutex_error(mutex->rules, pthread_mutex_init(mutex, NULL), mtxcode);//ajouter mutex.is_init = true ici est + smart
-		mutex->mtx_is_init = true;
+		mutex->is_init = true;
 	}
-	else if (DESTROY == mtxcode && mutex->mtx_is_init) //verifier ici si  mutex.is_init = true ici est + smart
+	else if (DESTROY == mtxcode && mutex->is_init) //verifier ici si  mutex.is_init = true ici est + smart
 	{
 		handle_mutex_error(mutex->rules, pthread_mutex_destroy(mutex), mtxcode);
-		mutex->mtx_is_init = false;
+		mutex->is_init = false;
 	}
 }
 

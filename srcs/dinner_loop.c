@@ -1,9 +1,10 @@
 # include "../includes/philosophers.h"
 
-// static void	philo_think(t_rules	*p_rules, t_philo *philo)
-// {
-// 	philo_msg_mutex(p_rules, *philo, THINK_MSG);
-// }
+static void	philo_think(t_rules	*p_rules, t_philo *philo)
+{
+	philo_msg_mutex(p_rules, *philo, THINK_MSG);
+	keep_desynchronised();
+}
 
 static void	philo_sleep(t_rules	*p_rules, t_philo *philo)
 {
@@ -40,34 +41,39 @@ static void	philo_eat(t_rules	*p_rules, t_philo *philo)
 	if(philo->meals_counter == p_rules->nbr_limit_meals)
 		philo->full = true;
 	// philo->is_eating = 0;//inutile avec meal lock
-	safe_mutex_handle(p_rules, &(p_rules->meal_lock.mtx), UNLOCK);
-	safe_mutex_handle(p_rules, &(philo->first_fork->mtx), UNLOCK);
-	safe_mutex_handle(p_rules, &(philo->second_fork->mtx), UNLOCK);
+	safe_mutex_handle(&(philo->fst_fork), UNLOCK);
+	safe_mutex_handle(&(philo->scd_fork), UNLOCK);
 }
 
-void	desynchronize_threads(t_philo philo)
+void	pre_desynchronize(t_philo philo)
 {
 	if (philo.id % 2 == 0)
 		ft_usleep(5e3);
 }
 
-void	*dinner_loop(void *philo_data)
+void	keep_desynchronize(t_philo philo)
 {
-	t_rules	*p_rules;
+	if (philo.id % 2 == 0)
+		ft_usleep(5e3);
+}
+
+void	*dinner_loop(void *p)
+{
+	t_rules	*rules;
 	t_philo *philo;
 
-	philo = (t_philo *)philo_data; 
-	p_rules = philo->rules;
-	// while (p_rules->ready_to_eat == false) //inutile
-	// 	ft_usleep(500);//on attend que tous les philos soient crees pour commencer le dinner
-	philo->timestamp_lastmeal = p_rules->timestamp_start; //retirer cette ligne du monitoring
-	desynchronize_threads(*philo);
-	while (p_rules->end_simulation == false)
+	philo = (t_philo *)p; 
+	rules = philo->rules;
+	//on attend que tous les philos soient crees pour commencer le dinner
+	while (get_locked_bool(&rules->rules_lock, &rules->dinner_ready) == false) 
+		ms_sleep(1);
+	philo->ts_lastmeal = rules->ts_start;//philo_lock et rules_lock ??
+	pre_desynchronize(*philo);
+	while (get_locked_bool(&rules->rules_lock, &rules->dinner_ended) == false)
 	{
-		philo_eat(p_rules, philo); 
-		philo_sleep(p_rules, philo);
-		// philo_think(p_rules, philo);
-		philo_msg_mutex(p_rules, *philo, THINK_MSG);
+		philo_eat(rules, philo); 
+		philo_sleep(rules, philo);
+		philo_think(rules, philo);
 	}
 	return(NULL); //inutile de retourner qq chose ? la fonction doit avoir ce prototype
 }
