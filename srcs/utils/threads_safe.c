@@ -28,12 +28,13 @@ static void	handle_thread_error(t_rules *p_rules, int status, t_trdcode trdcode)
 
 
 // //on pourrait techniquement se passer de cette fonction
-void	safe_thread_handle(t_rules *p_rules, pthread_t *philo_thread, void *philo, t_trdcode trdcode)
+// void	safe_thread_handle(t_rules *p_rules, pthread_t *philo_thread, void *philo, t_trdcode trdcode)
+void	safe_thread_handle(t_philo *philo, t_trdcode trdcode)
 {
 	if (CREATE == trdcode)
-		handle_thread_error(p_rules, pthread_create(philo_thread, NULL, dinner_loop, philo), trdcode);
+		handle_thread_error(philo->rules, pthread_create(&(philo->thread_id), NULL, dinner_loop, philo), trdcode);
 	else if (JOIN == trdcode)
-		handle_thread_error(p_rules, pthread_join(*philo_thread, NULL), trdcode);
+		handle_thread_error(philo->rules, pthread_join(philo->thread_id, NULL), trdcode);
 	else if (DETACH == trdcode)
-		handle_thread_error(p_rules, pthread_detach(*philo_thread), trdcode);
+		handle_thread_error(philo->rules, pthread_detach(philo->thread_id), trdcode);
 }

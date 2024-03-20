@@ -93,7 +93,7 @@ typedef struct s_philo
     int				id;
 	// bool			is_eating;
     int				meals_counter;
-    long			timestamp_lastmeal; //meal lock
+    long			lastmeal; //meal lock
     t_mutex			*first_fork;
     t_mutex			*second_fork;
 	t_mutex			philo_lock; //acces a var full
@@ -117,7 +117,7 @@ struct s_rules
 	//utils
 	long	timestamp_start; //heure precise du debut de la simulation
     //monitoring
-	t_mutex action_lock; // var dinner_ready && dinner_end
+	t_mutex rules_lock; // var dinner_ready && dinner_end
 	bool	dinner_ready;
 	bool	dinner_end; //mort philo ou tous les philo sont full
 	// t_mutex meal_lock; //verif full et timestamp_lastmeal;
@@ -136,21 +136,21 @@ void	philo_msg_mutex(t_rules *p_rules, t_philo philo, char *msg);
 void	print_error_mutex(t_rules *p_rules, char *strerr);
 
 //error
-void    exit_error(char *strerr);
+void    exit_error(char *strerr);//pas le droit d'exit
 void    close_error(t_rules *p_rules, char *strerr);
 
 //threads & mutex
-void	safe_thread_handle(t_rules *p_rules, pthread_t *philo_thread, void *philo_data, t_trdcode trdcode);
+void	safe_thread_handle(t_philo *philo, t_trdcode trdcode);
 
 
-void	safe_mutex_handle(t_rules *p_rules, t_mtx *mutex, t_mtxcode mtxcode);
-bool	get_locked_bool(t_rules *p_rules, t_mutex *lock, bool *to_get);
-void	set_locked_bool(t_rules *p_rules, t_mutex *lock, bool *to_set, bool value);
+bool	get_locked_bool(t_mutex *mutex, bool *to_get);
+void	set_locked_bool(t_mutex *mutex, bool *to_set, bool value);
+void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode);
 
 //time utils
-long	get_curr_timestamp(void);
-void	ft_usleep(long u_towait);
-long	get_elapsed_time_ms(long timestamp_start);
+long	get_curr_timestamp(void); //get_ms_timestamp
+void	ms_sleep(long ms); //ms_sleep(long ms);
+long	get_elapsed_time_ms(long timestamp_start); // get_ms_elapsed
 
 void	*dinner_loop(void *philo_data);
 void	monitor_dinner(t_rules	*p_rules);
