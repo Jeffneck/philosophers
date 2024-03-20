@@ -38,8 +38,8 @@ void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode) //retirer p_rules car 
 	}
 	else if (UNLOCK == mtxcode && mutex->is_lock)
 	{
-		handle_mutex_error(mutex->rules, pthread_mutex_unlock(mutex), mtxcode);
 		mutex->is_lock == false;
+		handle_mutex_error(mutex->rules, pthread_mutex_unlock(mutex), mtxcode);
 	}
 	else if (INIT == mtxcode)
 	{
@@ -48,8 +48,10 @@ void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode) //retirer p_rules car 
 	}
 	else if (DESTROY == mtxcode && mutex->is_init) //verifier ici si  mutex.is_init = true ici est + smart
 	{
-		handle_mutex_error(mutex->rules, pthread_mutex_destroy(mutex), mtxcode);
 		mutex->is_init = false;
+		if(mutex->is_lock)
+			safe_mutex_handle(mutex, UNLOCK);
+		handle_mutex_error(mutex->rules, pthread_mutex_destroy(mutex), mtxcode);
 	}
 }
 
