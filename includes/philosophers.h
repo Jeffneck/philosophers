@@ -119,7 +119,7 @@ struct s_rules
     //monitoring
 	t_mutex rules_lock; // var dinner_ready && dinner_end
 	bool	dinner_ready;
-	bool	dinner_end; //mort philo ou tous les philo sont full
+	bool	dinner_ended; //mort philo ou tous les philo sont full
 	// t_mutex meal_lock; //verif full et timestamp_lastmeal;
 	//mutex || struct synchronise
 	t_mutex	write_lock; //acces a stdout

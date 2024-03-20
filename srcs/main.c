@@ -19,11 +19,11 @@ static void	dinner_start(t_rules *p_rules)
 	p_rules->ready_to_eat = true;
 }
 
-destroy_initialized_mtx(t_rules *p_rules, t_mutex *mutex)
-{
-	if(mutex->mtx_is_init == true)
-		safe_mutex_handle(p_rules, &(mutex->mtx), DESTROY);
-}
+// destroy_initialized_mtx(t_rules *p_rules, t_mutex *mutex)
+// {
+// 	if(mutex->mtx_is_init == true)
+// 		safe_mutex_handle(p_rules, &(mutex->mtx), DESTROY);
+// }
 
 void    dinner_end(t_rules *p_rules) //etape de clean 
 {
@@ -42,20 +42,22 @@ void    dinner_end(t_rules *p_rules) //etape de clean
 	{
 		i = -1;
 		while(++i < p_rules->philos_nbr && philos[i].thread_is_init == true)
-			safe_thread_handle(p_rules, &(philos[i].thread_id), &philos[i], JOIN);
+		{
+			safe_thread_handle(&philos[i], JOIN);
+			safe_mutex_handle(&(philos[i].philo_lock), DESTROY);
+		}
 		free(philos);
 	}
     //destroy tous les mutex
 	if(forks)
 	{
 		i = -1;
-		while(++i < p_rules->philos_nbr && forks[i].mtx_is_init == true)
-			destroy_initialized_mtx(p_rules, &forks[i]);
+		while(++i < p_rules->philos_nbr)
+			safe_mutex_handle(&(forks[i]), DESTROY);
 		free(forks);
 	}
-		destroy_initialized_mtx(p_rules, &write_lock);
-		destroy_initialized_mtx(p_rules, &meal_lock);
-		destroy_initialized_mtx(p_rules, &end_lock);
+	safe_mutex_handle(&(p_rules->write_lock), DESTROY);
+	safe_mutex_handle(&(p_rules->rules_lock), DESTROY);
 }
 
 int     main(int ac, char **av) //penser au philo seul ! et au cas impossible des le debut ?

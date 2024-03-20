@@ -50,8 +50,14 @@ void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode) //retirer p_rules car 
 	else if (UNLOCK == mtxcode)
 		handle_mutex_error(mutex->rules, pthread_mutex_unlock(mutex), mtxcode);
 	else if (INIT == mtxcode)
+	{
 		handle_mutex_error(mutex->rules, pthread_mutex_init(mutex, NULL), mtxcode);//ajouter mutex.is_init = true ici est + smart
-	else if (DESTROY == mtxcode) //verifier ici si  mutex.is_init = true ici est + smart
+		mutex->mtx_is_init = true;
+	}
+	else if (DESTROY == mtxcode && mutex->mtx_is_init) //verifier ici si  mutex.is_init = true ici est + smart
+	{
 		handle_mutex_error(mutex->rules, pthread_mutex_destroy(mutex), mtxcode);
+		mutex->mtx_is_init = false;
+	}
 }
 
