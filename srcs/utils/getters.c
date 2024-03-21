@@ -1,34 +1,36 @@
 # include "../../includes/philosophers.h"
 
-bool	get_mtxbool(t_mutex *mutex, bool *to_get)
+static bool	getter_mtxbool(t_mutex *mutex, bool *to_get)
 {
-	bool ret;
+	bool	ret;
 	safe_mutex_handle(mutex, LOCK);
 	ret = *to_get;
 	safe_mutex_handle(mutex, UNLOCK);
-	return(ret);
+	return (ret);
 }
 
-void	set_mtxbool(t_mutex *mutex, bool *to_set, bool value)
+static long	getter_mtxlong(t_mutex *mutex, long *to_get)
 {
-	safe_mutex_handle(mutex, LOCK);
-	*to_set = value;
-	safe_mutex_handle(mutex, LOCK);
-}
-
-
-long	get_mtxlong(t_mutex *mutex, long *to_get)
-{
-	long ret;
+	long	ret;
 	safe_mutex_handle(mutex, LOCK);
 	ret = *to_get;
 	safe_mutex_handle(mutex, UNLOCK);
-	return(ret);
+	return (ret);
 }
 
-void	set_mtxlong(t_mutex *mutex, long *to_set, long value)
+bool	getter_bool(t_mutex *mutex, t_varcode varcode)
 {
-	safe_mutex_handle(mutex, LOCK);
-	*to_set = value;
-	safe_mutex_handle(mutex, LOCK);
+	if(DINNER_READY == varcode)
+		return (getter_mtxbool(mutex, &(mutex->rules->dinner_ready)));
+	return (getter_mtxbool(mutex, &(mutex->rules->dinner_ended)));
+}
+
+bool	getter_isfull(t_philo *philo)
+{
+	return (getter_mtxbool(&philo->philo_lock, &(philo->is_full)));
+}
+
+long	getter_tslastmeal(t_philo *philo)
+{
+	return (getter_mtxlong(&philo->philo_lock, &(philo->ts_lastmeal)));
 }

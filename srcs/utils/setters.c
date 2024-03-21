@@ -1,33 +1,33 @@
 # include "../../includes/philosophers.h"
 
-void	set_mtxbool(t_mutex *mutex, bool *to_set, bool value)
+static void	setter_mtxbool(t_mutex *mutex, bool *to_set, bool new_value)
 {
 	safe_mutex_handle(mutex, LOCK);
-	*to_set = value;
+	*to_set = new_value;
 	safe_mutex_handle(mutex, LOCK);
 }
 
-void	set_mtxlong(t_mutex *mutex, long *to_set, long value)
+static void	setter_mtxlong(t_mutex *mutex, long *to_set, long new_value)
 {
 	safe_mutex_handle(mutex, LOCK);
-	*to_set = value;
+	*to_set = new_value;
 	safe_mutex_handle(mutex, LOCK);
 }
 
-void set_bool(t_mutex *mutex, t_varcode varcode, bool value)
+void setter_bool(t_mutex *mutex, t_varcode varcode, bool new_value)
 {
 	if(DINNER_READY == varcode)
-		set_mtxbool(mutex, &(mutex->rules->dinner_ready), value);
+		setter_mtxbool(mutex, &(mutex->rules->dinner_ready), new_value);
 	else if(DINNER_ENDED == varcode)
-		set_mtxbool(mutex, &(mutex->rules->dinner_ended), value);
+		setter_mtxbool(mutex, &(mutex->rules->dinner_ended), new_value);
 }
 
-void philo_is_full(t_philo *philo, bool value)
+void setter_isfull(t_philo *philo, bool new_value)
 {
-	set_mtxbool(&philo->philo_lock, &(philo->is_full), value);
+	setter_mtxbool(&philo->philo_lock, &(philo->is_full), new_value);
 }
 
-void philo_lastmeal(t_philo *philo, long ts_meal)
+void setter_tslastmeal(t_philo *philo, long new_value)
 {
-	set_mtxlong(&philo->philo_lock, &(philo->), value);
+	setter_mtxlong(&philo->philo_lock, &(philo->ts_lastmeal), new_value);
 }

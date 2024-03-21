@@ -6,36 +6,36 @@
 // la possibilite d' acceder a la struct t_rules pour liberer toutes les allocations
 
 
-static void	handle_mtx_err(t_rules *p_rules, int ret, t_mtxcode mtxcode)
+static void	handle_mtx_err(t_rules *rules, int ret, t_mtxcode mtxcode)
 {
 	if (0 == ret || EPERM == ret || EBUSY == ret
 			|| (EINVAL == ret && (LOCK == mtxcode || UNLOCK == mtxcode)))
 		return ;
 	else if (EINVAL == ret && INIT == mtxcode)
-		close_error(p_rules, EINVAL_E);
+		close_error(rules, EINVAL_MTX_E);
 	else if (EDEADLK == ret)
-		close_error(p_rules, EDEADLK_E);
+		close_error(rules, EDEADLK_MTX_E);
 	else if (ENOMEM == ret)
-		close_error(p_rules, ENOMEM_E);
+		close_error(rules, ENOMEM_MTX_E);
 }
 
-void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode) //retirer p_rules car contenu dans mutex et donner t_mutex au lieu de t_mtx
+void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode) //retirer rules car contenu dans mutex et donner t_mutex au lieu de t_mtx
 {
 	if(!mutex) //protege dans certains cas de closing
 		return;
 	else if (LOCK == mtxcode)
-		handle_mtx_err(mutex->rules, pthread_mutex_lock(mutex), mtxcode);
+		handle_mtx_err(mutex->rules, pthread_mutex_lock(&mutex->mtx_id), mtxcode);
 	else if (UNLOCK == mtxcode)
-		handle_mtx_err(mutex->rules, pthread_mutex_unlock(mutex), mtxcode);
+		handle_mtx_err(mutex->rules, pthread_mutex_unlock(&mutex->mtx_id), mtxcode);
 	else if (INIT == mtxcode)
 	{
-		handle_mtx_err(mutex->rules, pthread_mutex_init(mutex, NULL), mtxcode);//ajouter mutex.is_init = true ici est + smart
+		handle_mtx_err(mutex->rules, pthread_mutex_init(&mutex->mtx_id, NULL), mtxcode);//ajouter mutex.is_init = true ici est + smart
 		mutex->is_init = true; //variable uniquement touchee par main_thd mais potentiellement inutile
 	}
 	else if (DESTROY == mtxcode && mutex->is_init)
 	{
 		mutex->is_init = false; //variable uniquement touchee par main_thd
-		handle_mtx_err(mutex->rules, pthread_mutex_destroy(mutex), mtxcode);
+		handle_mtx_err(mutex->rules, pthread_mutex_destroy(&mutex->mtx_id), mtxcode);
 	}
 	else//
 		close_error(mutex->rules, "this messge should not be printed : safe_mutex_handle\n"); //retirer apres debug
@@ -48,29 +48,29 @@ void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode) //retirer p_rules car 
 
 
 
-// static void	handle_mtx_err(t_rules *p_rules, int funct_return, t_mtxcode mtxcode)
+// static void	handle_mtx_err(t_rules *rules, int funct_return, t_mtxcode mtxcode)
 // {
 // 	if (0 == funct_return)
 // 		return ;
 // 	if (EINVAL == funct_return && (LOCK == mtxcode || UNLOCK == mtxcode))
-// 		return ; close_error(p_rules, "The value specified by mutex is invalid\n");
+// 		return ; close_error(rules, "The value specified by mutex is invalid\n");
 // 	else if (EINVAL == funct_return && INIT == mtxcode)
-// 		close_error(p_rules, "The value specified by attr is invalid.\n");
+// 		close_error(rules, "The value specified by attr is invalid.\n");
 // 	else if (c == funct_return)
-// 		close_error(p_rules, "A deadlock would occur if the thread "
+// 		close_error(rules, "A deadlock would occur if the thread "
 // 			"blocked waiting for mutex.\n");
 // 	else if (EPERM == funct_return)
-// 		close_error(p_rules, "The current thread does not hold a lock on mutex.\n");
+// 		close_error(rules, "The current thread does not hold a lock on mutex.\n");
 // 	else if (ENOMEM == funct_return)
-// 		close_error(p_rules, "The process cannot allocate enough memory"
+// 		close_error(rules, "The process cannot allocate enough memory"
 // 			" to create another mutex.\n");
 // 	else if (EBUSY == funct_return)
-// 		close_error(p_rules, "Mutex is locked\n");
+// 		close_error(rules, "Mutex is locked\n");
 
 // 	//ne pas mettre close error ici
 // }
 
-// void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode) //retirer p_rules car contenu dans mutex et donner t_mutex au lieu de t_mtx
+// void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode) //retirer rules car contenu dans mutex et donner t_mutex au lieu de t_mtx
 // {
 // 	int	ret;
 // 	if(!mutex) //protege dans certains cas de closing

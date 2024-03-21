@@ -43,11 +43,17 @@ typedef pthread_mutex_t t_mtx;
 typedef struct s_rules t_rules;
 
 # define MALLOC_E "memory allocation error detected, program ended\n"
-# define EINVAL_E "The value specified by attr is invalid.\n"
-# define EDEADLK_E "A deadlock would occur if the thread blocked waiting for mutex.\n"
-# define ENOMEM_E "The process cannot allocate enough memory to create another mutex.\n"
-# define MALLOC_E "memory allocation error detected, program ended\n"
-# define MALLOC_E "memory allocation error detected, program ended\n"
+# define EINVAL_MTX_E "The value specified by attr is invalid.\n"
+# define EDEADLK_MTX_E "A deadlock would occur if the thread blocked waiting for mutex.\n"
+# define ENOMEM_MTX_E "The process cannot allocate enough memory to create another mutex.\n"
+
+# define EINVAL_THD_C_E "The value specified by attr is invalid.\n"
+# define EINVAL_THD_J_E "The value specified by thread is not joinable\n"
+# define EAGAIN_THD_E "No resources to create another thread\n"
+# define EPERM_THD_E "The caller does not have appropriate permission\n"
+# define EDEADLK_THD_E "A deadlock was detected or the value of thread specifies the calling thread.\n"
+# define ESRCH_THD_E "No thread could be found corresponding to that specified by the given thread ID, thread.\n"
+
 
 # define TOOK_FORK_MSG "%ld %d has taken a fork\n"
 # define EAT_MSG "%ld %d is eating\n"
@@ -172,10 +178,13 @@ void	safe_thread_handle(t_philo *philo, t_trdcode trdcode);
 void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode);
 
 //mutex access 
-bool	get_mtxbool(t_mutex *mutex, bool *to_get);
-void	set_mtxbool(t_mutex *mutex, bool *to_set, bool value);
-long	get_mtxlong(t_mutex *mutex, long *to_get);
-void	set_mtxlong(t_mutex *mutex, long *to_set, long value);
+void setter_bool(t_mutex *mutex, t_varcode varcode, bool new_value);
+void setter_isfull(t_philo *philo, bool new_value);
+void setter_tslastmeal(t_philo *philo, long new_value);
+
+bool	getter_bool(t_mutex *mutex, t_varcode varcode);
+bool	getter_isfull(t_philo *philo);
+long	getter_tslastmeal(t_philo *philo);
 
 //time utils
 long	get_ms_timestamp(void); //get_ms_timestamp

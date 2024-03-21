@@ -5,38 +5,36 @@
 // la possibilite de vider le gc
 // la possibilite d' accerder a la struct t_rules pour liberer toutes les allocations
 
-static void	handle_thread_error(t_rules *p_rules, int status, t_trdcode trdcode)
+static void	handle_thd_err(t_rules *rules, int status, t_trdcode trdcode)
 {
 	if (0 == status)
 		return ;
 	if (EAGAIN == status)
-		close_error(p_rules, "No resources to create another thread"); 
+		close_error(rules, EAGAIN_THD_E); 
 	else if (EPERM == status)
-		close_error(p_rules, "The caller does not have appropriate permission\n");
+		close_error(rules, EPERM_THD_E);
 	else if (EINVAL == status && CREATE == trdcode)
-		close_error(p_rules, "The value specified by attr is invalid.");
+		close_error(rules, EINVAL_THD_C_E);
 	else if (EINVAL == status && (JOIN == trdcode || DETACH == trdcode))
-		close_error(p_rules, "The value specified by thread is not joinable\n");
+		close_error(rules, EINVAL_THD_J_E);
 	else if (ESRCH == status)
-		close_error(p_rules, "No thread could be found corresponding to that"
-			"specified by the given thread ID, thread.");
+		close_error(rules, ESRCH_THD_E);
 	else if (EDEADLK == status)
-		close_error(p_rules, "A deadlock was detected or the value of"
-			"thread specifies the calling thread.");
-	//tout remplacer par print_msg pas de exit
+		close_error(rules, EDEADLK_THD_E);
 }
 
-
 // //on pourrait techniquement se passer de cette fonction
-// void	safe_thread_handle(t_rules *p_rules, pthread_t *philo_thread, void *philo, t_trdcode trdcode)
+// void	safe_thread_handle(t_rules *rules, pthread_t *philo_thread, void *philo, t_trdcode trdcode)
 void	safe_thread_handle(t_philo *philo, t_trdcode trdcode)
 {
 	if(!philo)
 		return;
 	if (CREATE == trdcode)
-		handle_thread_error(philo->rules, pthread_create(&(philo->thread.thd_id), NULL, dinner_loop, philo), trdcode);
+		handle_thd_err(philo->rules, pthread_create(&(philo->thread.thd_id), NULL, dinner_loop, philo), trdcode);
 	else if (JOIN == trdcode)
-		handle_thread_error(philo->rules, pthread_join(philo->thread.thd_id, NULL), trdcode);
+		handle_thd_err(philo->rules, pthread_join(philo->thread.thd_id, NULL), trdcode);
 	else if (DETACH == trdcode)
-		handle_thread_error(philo->rules, pthread_detach(philo->thread.thd_id), trdcode);
+		handle_thd_err(philo->rules, pthread_detach(philo->thread.thd_id), trdcode);
+	else//
+		close_error(philo->rules, "this messge should not be printed : safe_mutex_handle\n");
 }

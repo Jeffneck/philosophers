@@ -1,7 +1,7 @@
 # include "../includes/philosophers.h"
 
 
-bool	is_end_condition(t_rules *p_rules)
+bool	is_end_condition(t_rules *rules)
 {
 	int		i;
 	t_philo	*philos;
@@ -9,29 +9,27 @@ bool	is_end_condition(t_rules *p_rules)
 	bool	is_dead;
 
 	i = -1;
-	philos = p_rules->philos;
+	philos = rules->philos;
 	nb_full = 0;
 	is_dead = false;
-	while(++i < p_rules->nb_phil && is_dead == false)
+	while(++i < rules->nb_phil && is_dead == false)
 	{
-		safe_mutex_handle(&(philos[i].philo_lock), LOCK);
-		is_dead = (get_ms_elapsed(philos[i].ts_lastmeal) > p_rules->ms_to_die); //philo_lock deja unlocke
-		if (philos[i].full == true)
+		is_dead = (get_ms_elapsed(getter_tslastmeal(&philos[i])) > rules->ms_to_die); //philo_lock deja unlocke
+		if (getter_isfull(&philos[i]) == true)
 			nb_full++;
-		safe_mutex_handle(&(philos[i].philo_lock), LOCK);
 	}
 		if(is_dead == true) //time to die est accessible sans mutex ?
-			philo_msg_mutex(p_rules, philos[i], DIED_MSG);
-	return (is_dead || (nb_full == p_rules->nb_phil));
+			print_philo(&philos[i], DIED_MSG);
+	return (is_dead || (nb_full == rules->nb_phil));
 }
 
-void	monitor_dinner(t_rules	*p_rules)
+void	monitor_dinner(t_rules	*rules)
 {
-	while(is_end_condition(p_rules) == false)
+	while(is_end_condition(rules) == false)
 		ms_sleep(2);
 }
 
-// bool	one_philo_died(t_rules *p_rules)
+// bool	one_philo_died(t_rules *rules)
 // {
 // 	bool	is_dead;
 // 	int		i;
@@ -39,19 +37,19 @@ void	monitor_dinner(t_rules	*p_rules)
 
 // 	i = -1;
 // 	is_dead = false;
-// 	philos = p_rules->philos;
-// 	while(++i < p_rules->philos_nbr && is_dead == false)
+// 	philos = rules->philos;
+// 	while(++i < rules->philos_nbr && is_dead == false)
 // 	{
-// 		// printf("lastmeal %ld, start %ld, time die %ld\n",philo.timestamp_lastmeal,  p_rules->timestamp_start, p_rules->time_to_die);
-// 		// printf("%ld  %d DIED ? %ld\n", get_elapsed_time_ms(p_rules->timestamp_start),philo.id, get_elapsed_time_ms(philo.timestamp_lastmeal));
-// 		// if(philo.is_eating == false && (philo.timestamp_lastmeal - p_rules->timestamp_start) > p_rules->time_to_die / 1e3)
-// 		// if((philo.timestamp_lastmeal - p_rules->timestamp_start) > p_rules->time_to_die / 1e3)
-// 		// if((get_curr_timestamp() - philo.timestamp_lastmeal) > p_rules->time_to_die )
+// 		// printf("lastmeal %ld, start %ld, time die %ld\n",philo.timestamp_lastmeal,  rules->timestamp_start, rules->time_to_die);
+// 		// printf("%ld  %d DIED ? %ld\n", get_ms_elapsed(rules->timestamp_start),philo.id, get_ms_elapsed(philo.timestamp_lastmeal));
+// 		// if(philo.is_eating == false && (philo.timestamp_lastmeal - rules->timestamp_start) > rules->time_to_die / 1e3)
+// 		// if((philo.timestamp_lastmeal - rules->timestamp_start) > rules->time_to_die / 1e3)
+// 		// if((get_curr_timestamp() - philo.timestamp_lastmeal) > rules->time_to_die )
 // 		safe_mutex_handle(&(philos[i].philo_lock), LOCK);
-// 		if(get_elapsed_time_ms(philos[i].lastmeal) > p_rules->time_to_die) //time to die est accessible sans mutex ?
+// 		if(get_ms_elapsed(philos[i].lastmeal) > rules->time_to_die) //time to die est accessible sans mutex ?
 // 		{
 // 			// write(1, "a\n", 2);//
-// 			philo_msg_mutex(p_rules, philos[i], DIED_MSG);
+// 			philo_msg_mutex(rules, philos[i], DIED_MSG);
 // 			is_dead = true;
 // 		}
 // 		safe_mutex_handle(&(philos[i].philo_lock), LOCK);
@@ -59,7 +57,7 @@ void	monitor_dinner(t_rules	*p_rules)
 // 	return (is_dead);
 // }
 
-// bool	everyone_is_full(t_rules *p_rules)
+// bool	everyone_is_full(t_rules *rules)
 // {
 // 	int		i;
 // 	int		nb_full;
@@ -67,14 +65,14 @@ void	monitor_dinner(t_rules	*p_rules)
 
 // 	i = -1;
 // 	nb_full = 0;
-// 	philos = p_rules->philos;
-// 	while(++i < p_rules->philos_nbr)
+// 	philos = rules->philos;
+// 	while(++i < rules->philos_nbr)
 // 	{
-// 		// if (p_rules->philos[i].full == true)
+// 		// if (rules->philos[i].full == true)
 // 		if (get_locked_bool(&(philos[i].philo_lock), &(philos[i].full)) == true)
 // 			nb_full++;
 // 	}
-// 	if (nb_full == p_rules->philos_nbr)
+// 	if (nb_full == rules->philos_nbr)
 // 		return (true);
 // 	return (false);
 // }
