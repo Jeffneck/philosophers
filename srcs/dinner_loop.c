@@ -1,20 +1,21 @@
 # include "../includes/philosophers.h"
 
-static void	philo_think(t_rules	*p_rules, t_philo *philo)
+static void	philo_think(t_philo *philo)
 {
-	philo_msg_mutex(p_rules, *philo, THINK_MSG);
+	print_philo(philo, THINK_MSG);
 	keep_desynchronised();
 }
 
-static void	philo_sleep(t_rules	*p_rules, t_philo *philo)
+static void	philo_sleep(t_philo *philo)
 {
-	philo_msg_mutex(p_rules, *philo, SLEEP_MSG);
-	ft_usleep(p_rules->time_to_sleep * 1e3);
+	print_philo(philo, SLEEP_MSG);
+	ms_sleep(philo->ms_to_sleep);
+	// ms_sleep(p_rules->ms_to_sleep); //si on copie ms_to_sleep dans chaque philo on pourait avoir une meilleure opti des timings
 }
 
 // static void	update_n_check_end_conditions(t_rules	*p_rules, t_philo *philo)//plus besoin de is_eating
 // {
-// 	if(philo->meals_counter == p_rules->nbr_limit_meals)
+// 	if(philo->nb_meals == p_rules->nbr_limit_meals)
 // 	{
 		
 // 	}
@@ -25,22 +26,21 @@ static void	philo_sleep(t_rules	*p_rules, t_philo *philo)
 // 	safe_mutex_handle(p_rules, &(p_rules->end_conditions), UNLOCK);
 // }
 
-static void	philo_eat(t_rules	*p_rules, t_philo *philo)
+static void	philo_eat(t_philo *philo)
 {
-	philo->meals_counter++;
-	safe_mutex_handle(p_rules, &(philo->first_fork->mtx), LOCK);
-	philo_msg_mutex(p_rules, *philo, TOOK_FORK_MSG);
-	safe_mutex_handle(p_rules, &(philo->second_fork->mtx), LOCK);
-	philo_msg_mutex(p_rules, *philo, TOOK_FORK_MSG);
-	safe_mutex_handle(p_rules, &(p_rules->meal_lock.mtx), LOCK);
+	safe_mutex_handle(&(philo->fst_fork), LOCK);
+	print_philo(philo, TOOK_FORK_MSG);
+	safe_mutex_handle(&(philo->scd_fork), LOCK);
+	print_philo(philo, TOOK_FORK_MSG);
+	safe_mutex_handle(&(philo->philo_lock), LOCK);
 
-	// philo->is_eating = 1; //inutile avec meal lock
-	philo_msg_mutex(p_rules, *philo, EAT_MSG);
-	philo->timestamp_lastmeal = get_curr_timestamp();//tout mettre en microsec plutot ?
-	ft_usleep(p_rules->time_to_eat * 1e3);
-	if(philo->meals_counter == p_rules->nbr_limit_meals)
+	print_philo(philo, EAT_MSG);
+	philo->ts_lastmeal = get_curr_timestamp();//tout mettre en microsec plutot ?
+	ms_sleep(philo->rules->ms_to_eat);
+	if(++philo->nb_meals == philo->rules->max_meals)
 		philo->full = true;
-	// philo->is_eating = 0;//inutile avec meal lock
+
+	safe_mutex_handle(&(philo->philo_lock), LOCK);
 	safe_mutex_handle(&(philo->fst_fork), UNLOCK);
 	safe_mutex_handle(&(philo->scd_fork), UNLOCK);
 }

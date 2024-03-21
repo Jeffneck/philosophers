@@ -15,7 +15,7 @@ bool	is_end_condition(t_rules *p_rules)
 	while(++i < p_rules->nb_phil && is_dead == false)
 	{
 		safe_mutex_handle(&(philos[i].philo_lock), LOCK);
-		is_dead = (get_elapsed_time_ms(philos[i].ts_lastmeal) > p_rules->ms_to_die);
+		is_dead = (get_ms_elapsed(philos[i].ts_lastmeal) > p_rules->ms_to_die); //philo_lock deja unlocke
 		if (philos[i].full == true)
 			nb_full++;
 		safe_mutex_handle(&(philos[i].philo_lock), LOCK);

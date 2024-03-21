@@ -43,6 +43,11 @@ typedef pthread_mutex_t t_mtx;
 typedef struct s_rules t_rules;
 
 # define MALLOC_E "memory allocation error detected, program ended\n"
+# define EINVAL_E "The value specified by attr is invalid.\n"
+# define EDEADLK_E "A deadlock would occur if the thread blocked waiting for mutex.\n"
+# define ENOMEM_E "The process cannot allocate enough memory to create another mutex.\n"
+# define MALLOC_E "memory allocation error detected, program ended\n"
+# define MALLOC_E "memory allocation error detected, program ended\n"
 
 # define TOOK_FORK_MSG "%ld %d has taken a fork\n"
 # define EAT_MSG "%ld %d is eating\n"
@@ -57,6 +62,12 @@ typedef enum e_timecode
 	MILLISECONDS,
 	MICROSECONDS,
 }			t_timecode;
+
+typedef enum e_varcode
+{
+	DINNER_READY,
+	DINNER_ENDED,
+}			t_varcode;
 
 typedef enum e_mtxcode
 {
@@ -87,7 +98,7 @@ th = thread
 typedef struct s_mutex
 {
     pthread_mutex_t	mtx_id;
-	bool			is_lock;
+	// bool			is_lock;
 	bool			is_init;
 	t_rules			*rules;
 }   t_mutex;
@@ -101,15 +112,24 @@ typedef struct s_thread
 
 typedef struct s_philo
 {
-    int				id;
-    int				nb_meals;
-    t_mutex			*fst_fork;
-    t_mutex			*scd_fork;
-	t_mutex			philo_lock; //lock : full / ts_lastmeal
-    long			ts_lastmeal;
-    bool			full;
-    t_thread		thread;
-    t_rules			*rules;
+    int			id;
+	//
+	// long		ms_to_die;
+	// long		ms_to_eat;
+	// long		ms_to_sleep;
+	//
+	int			nb_meals;
+	// int			max_meals; 
+	//
+	t_mutex		*fst_fork;
+	t_mutex		*scd_fork;
+	//locked
+	t_mutex		philo_lock;
+	long		ts_lastmeal;
+	bool		is_full;
+	//locked
+	t_thread	thread;
+	t_rules		*rules;
 }   t_philo;
 
 
@@ -139,11 +159,11 @@ void	*ft_calloc(size_t nmemb, size_t size);
 
 //print
 void	ft_putstr_fd(char *s, int fd);
-void	philo_msg_mutex(t_rules *p_rules, t_philo philo, char *msg);
-void	print_error_mutex(t_rules *p_rules, char *strerr);
+void	print_philo(t_philo *philo, char *msg);
+void	print_error(t_rules *p_rules, char *strerr);
 
 //error
-void    exit_error(char *strerr);//pas le droit d'exit
+// void    exit_error(char *strerr);//pas le droit d'exit
 void    close_error(t_rules *p_rules, char *strerr);
 
 //threads & mutex
@@ -171,7 +191,7 @@ void    init_structs(t_rules *p_rules, char ** av);
 
 //init utils
 void	check_rules_max_values(t_rules *p_rules);
-void	transform_rules_times_to_ms(t_rules *p_rules);
+// void	transform_rules_times_to_ms(t_rules *p_rules);
 
 
 
