@@ -63,4 +63,7 @@ val : re
 	@echo "$(_OK) philo_val compiled"
 	valgrind ./philo_val 4 410 200 200
 
-.PHONY: all clean fclean re force bonus sanitize valgrind
+test : re
+	./philosophers 2 410 200 200
+
+.PHONY: all clean fclean re force bonus sanitize valgrind test

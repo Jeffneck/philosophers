@@ -3,8 +3,8 @@
 
 bool	is_end_condition(t_rules *rules)
 {
-	printf("is_end_condition\n");//
-	fflush(stdout);//
+	// printf("is_end_condition\n");//
+	// fflush(stdout);//
 	int		i;
 	t_philo	*philos;
 	int		nb_full;
@@ -17,13 +17,13 @@ bool	is_end_condition(t_rules *rules)
 	while(++i < rules->nb_phil && is_dead == false)
 	{
 		is_dead = (get_ms_elapsed(getter_tslastmeal(&philos[i])) > rules->ms_to_die); //philo_lock deja unlocke
-		printf("is_end_condition\n");//
-		fflush(stdout);//
 		if (getter_isfull(&philos[i]) == true)
 			nb_full++;
 	}
-		if(is_dead == true) //time to die est accessible sans mutex ?
-			print_philo(&philos[i], DIED_MSG);
+	if(is_dead == true) //time to die est accessible sans mutex ?
+		print_philo(&philos[i], DIED_MSG);
+	// printf("is_end_condition is dead = %d nb_full = %d\n", is_dead, nb_full);//
+	// fflush(stdout);//
 	return (is_dead || (nb_full == rules->nb_phil));
 }
 
@@ -33,10 +33,11 @@ void	monitor_dinner(t_rules	*rules)
 	fflush(stdout);//
 	while(getter_bool(&rules->rules_lock, DINNER_READY) == false)//attendre que le repas commence avant de veifier le statut de chaque philo
 		ms_sleep(2);
+	ms_sleep(5); //attendre que tous les philos soient dans la dinner loop
 	while(is_end_condition(rules) == false)
 	{
-		printf("monitor_loop\n");//
-		fflush(stdout);//
+		// printf("monitor_loop\n");//
+		// fflush(stdout);//
 		ms_sleep(2);
 	}
 }

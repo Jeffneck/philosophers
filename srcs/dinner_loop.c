@@ -37,7 +37,7 @@ static void	philo_eat(t_philo *philo)
 	if(++philo->nb_meals == philo->rules->max_meals)
 		philo->is_full = true;
 
-	safe_mutex_handle(&(philo->philo_lock), LOCK);
+	safe_mutex_handle(&(philo->philo_lock), UNLOCK);
 	safe_mutex_handle(philo->fst_fork, UNLOCK);
 	safe_mutex_handle(philo->scd_fork, UNLOCK);
 }
@@ -54,7 +54,7 @@ void	*dinner_loop(void *p)
 	rules = philo->rules;
 	//on attend que tous les philos soient crees pour commencer le dinner
 	while (getter_bool(&rules->rules_lock, DINNER_READY) == false) 
-		ms_sleep(1);
+		ms_sleep(2);
 	// setter_tslastmeal(philo, getter_tsstart(philo));//philo_lock et rules_lock ?? //getter_ts_start semble inutile
 	setter_tslastmeal(philo, rules->ts_start);//philo_lock et rules_lock ??
 	pre_desynchronize(philo);

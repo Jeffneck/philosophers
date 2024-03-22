@@ -11,8 +11,8 @@ static bool	getter_mtxbool(t_mutex *mutex, bool *to_get)
 
 static long	getter_mtxlong(t_mutex *mutex, long *to_get)
 {
-	printf("getter_mtxlong\n");//
-	fflush(stdout);//
+	// printf("getter_mtxlong\n");//
+	// fflush(stdout);//
 	long	ret;
 	safe_mutex_handle(mutex, LOCK);
 	ret = *to_get;
