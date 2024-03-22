@@ -64,6 +64,6 @@ val : re
 	valgrind ./philo_val 4 410 200 200
 
 test : re
-	./philosophers 2 410 200 200
+	./philosophers 100 399 200 200 3
 
 .PHONY: all clean fclean re force bonus sanitize valgrind test

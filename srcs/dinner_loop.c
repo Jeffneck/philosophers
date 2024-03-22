@@ -3,14 +3,15 @@
 static void	pre_desynchronize(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
-		ms_sleep(5e3);
+		ms_sleep(5);
 }
 
-static void	keep_desynchronize(t_philo *philo)
-{
-	if (philo->id % 2 == 0)
-		ms_sleep(5e3);
-}
+// static void	keep_desynchronize(t_philo *philo)
+// {
+// 	if (philo->id % 2 == 0)
+// 		ms_sleep(0.9 * philo->rules->ms_to_eat);
+// }
+
 static void	philo_think(t_philo *philo)
 {
 	print_philo(philo, THINK_MSG);
@@ -63,7 +64,7 @@ void	*dinner_loop(void *p)
 		philo_eat(philo); 
 		philo_sleep(philo);
 		philo_think(philo);
-		keep_desynchronize(philo);
+		// keep_desynchronize(philo);
 	}
 	return(NULL); //inutile de retourner qq chose ? la fonction doit avoir ce prototype
 }

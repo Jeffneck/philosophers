@@ -17,11 +17,11 @@ bool	is_end_condition(t_rules *rules)
 	while(++i < rules->nb_phil && is_dead == false)
 	{
 		is_dead = (get_ms_elapsed(getter_tslastmeal(&philos[i])) > rules->ms_to_die); //philo_lock deja unlocke
+		if(is_dead == true) //time to die est accessible sans mutex ?
+			print_philo(&philos[i], DIED_MSG);
 		if (getter_isfull(&philos[i]) == true)
 			nb_full++;
 	}
-	if(is_dead == true) //time to die est accessible sans mutex ?
-		print_philo(&philos[i], DIED_MSG);
 	// printf("is_end_condition is dead = %d nb_full = %d\n", is_dead, nb_full);//
 	// fflush(stdout);//
 	return (is_dead || (nb_full == rules->nb_phil));

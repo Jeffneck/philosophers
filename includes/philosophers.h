@@ -56,8 +56,8 @@ typedef struct s_rules t_rules;
 
 
 # define TOOK_FORK_MSG "%ld %d has taken a fork\n"
-# define EAT_MSG "%ld %d is eating\n"
-# define SLEEP_MSG "%ld %d is sleeping\n"
+# define EAT_MSG R"%ld %d is eating\n"RS
+# define SLEEP_MSG B"%ld %d is sleeping\n"RS
 # define THINK_MSG "%ld %d is thinking\n"
 # define DIED_MSG "%ld %d died\n"
 
