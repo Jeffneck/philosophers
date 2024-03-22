@@ -58,9 +58,9 @@ void    dinner_end(t_rules *rules) //etape de clean
 			safe_mutex_handle(&(forks[i]), DESTROY);
 		free(forks);
 	}
-	if(&rules->write_lock && rules->write_lock.is_init)
+	if(rules->write_lock.is_init)
 		safe_mutex_handle(&(rules->write_lock), DESTROY);
-	if(&rules->rules_lock && rules->rules_lock.is_init)
+	if(rules->rules_lock.is_init)
 		safe_mutex_handle(&(rules->rules_lock), DESTROY);
 }
 

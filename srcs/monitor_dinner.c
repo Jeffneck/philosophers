@@ -3,6 +3,8 @@
 
 bool	is_end_condition(t_rules *rules)
 {
+	printf("is_end_condition\n");//
+	fflush(stdout);//
 	int		i;
 	t_philo	*philos;
 	int		nb_full;
@@ -25,6 +27,8 @@ bool	is_end_condition(t_rules *rules)
 
 void	monitor_dinner(t_rules	*rules)
 {
+	printf("monitor_dinner\n");//
+	fflush(stdout);//
 	while(is_end_condition(rules) == false)
 		ms_sleep(2);
 }

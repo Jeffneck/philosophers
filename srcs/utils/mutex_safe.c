@@ -8,6 +8,8 @@
 
 static void	handle_mtx_err(t_rules *rules, int ret, t_mtxcode mtxcode)
 {
+	printf("handle_mtx_err\n");//
+	fflush(stdout);//
 	if (0 == ret || EPERM == ret || EBUSY == ret
 			|| (EINVAL == ret && (LOCK == mtxcode || UNLOCK == mtxcode)))
 		return ;
@@ -21,6 +23,8 @@ static void	handle_mtx_err(t_rules *rules, int ret, t_mtxcode mtxcode)
 
 void	safe_mutex_handle(t_mutex *mutex, t_mtxcode mtxcode) //retirer rules car contenu dans mutex et donner t_mutex au lieu de t_mtx
 {
+	printf("safe_mutex_handle code = %d\n", mtxcode);//
+	fflush(stdout);//
 	if(!mutex) //protege dans certains cas de closing
 		return;
 	else if (LOCK == mtxcode)

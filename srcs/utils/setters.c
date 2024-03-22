@@ -4,14 +4,14 @@ static void	setter_mtxbool(t_mutex *mutex, bool *to_set, bool new_value)
 {
 	safe_mutex_handle(mutex, LOCK);
 	*to_set = new_value;
-	safe_mutex_handle(mutex, LOCK);
+	safe_mutex_handle(mutex, UNLOCK);
 }
 
 static void	setter_mtxlong(t_mutex *mutex, long *to_set, long new_value)
 {
 	safe_mutex_handle(mutex, LOCK);
 	*to_set = new_value;
-	safe_mutex_handle(mutex, LOCK);
+	safe_mutex_handle(mutex, UNLOCK);
 }
 
 void setter_bool(t_mutex *mutex, t_varcode varcode, bool new_value)

@@ -6,13 +6,13 @@ static void	assign_forks(t_philo *philo, t_mutex *forks)
 	fflush(stdout); //
 	if (philo->id % 2 == 0)
 	{
-		printf("philo id = %d first fork id %d second fork id %d\n", philo->id, philo->id % philo->rules->nb_phil, philo->id - 1);/////
+		printf("pair philo id = %d first fork id %d second fork id %d\n", philo->id, philo->id % philo->rules->nb_phil, philo->id - 1);/////
 		philo->fst_fork = &(forks[philo->id % philo->rules->nb_phil]);
 		philo->scd_fork = &(forks[philo->id - 1]);
 	}
 	else
 	{
-		printf("philo id = %d first fork id %d second fork id %d\n", philo->id - 1, philo->id, philo->id % philo->rules->nb_phil);/////
+		printf(" philo id = %d first fork id %d second fork id %d\n", philo->id, philo->id - 1, philo->id);/////
 		philo->fst_fork = &(forks[philo->id - 1]);
 		philo->scd_fork = &(forks[philo->id]);
 	}

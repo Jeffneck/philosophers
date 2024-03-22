@@ -45,6 +45,8 @@ static void	philo_eat(t_philo *philo)
 
 void	*dinner_loop(void *p)
 {
+	printf("dinner loop\n");//
+	fflush(stdout);//
 	t_rules	*rules;
 	t_philo *philo;
 

@@ -4,10 +4,10 @@ NAME = philosophers
 
 NAME_SHORT = philo
 
-CC = cc
+CC = clang
 
-CFLAGS = -Werror -Wall -Wextra -pthread -g3
-
+CFLAGS = -pthread -fsanitize=thread
+# -Werror -Wall -Wextra
 RM = rm -rf
 
 SRCS =  srcs/main.c \
@@ -39,7 +39,7 @@ ${NAME}: ${OBJS}
 
 %.o: %.c  includes/philosophers.h
 	@echo "[..] $(NAME_SHORT)... compiling $*.c\r\c"
-	@${CC} ${CFLAGS} -g3 -Iincludes -c $< -o $@
+	@${CC} ${CFLAGS} -Iincludes -c $< -o $@
 	@echo "$(_CLEAR)"
 
 clean :
