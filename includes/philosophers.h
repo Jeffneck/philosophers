@@ -56,10 +56,10 @@ typedef struct s_rules t_rules;
 
 
 # define TOOK_FORK_MSG "%ld %d has taken a fork\n"
-# define EAT_MSG R"%ld %d is eating\n"RS
+# define EAT_MSG Y"%ld %d is eating\n"RS
 # define SLEEP_MSG B"%ld %d is sleeping\n"RS
 # define THINK_MSG "%ld %d is thinking\n"
-# define DIED_MSG "%ld %d died\n"
+# define DIED_MSG R"%ld %d died\n"RS
 
 
 typedef enum e_timecode
@@ -166,6 +166,8 @@ void	*ft_calloc(size_t nmemb, size_t size);
 //print
 void	ft_putstr_fd(char *s, int fd);
 void	print_philo(t_philo *philo, char *msg);
+void	print_philo_died(t_philo *philo);
+
 void	print_error(t_rules *p_rules, char *strerr);
 
 //error

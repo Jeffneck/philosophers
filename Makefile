@@ -61,9 +61,15 @@ sanitize : re
 val : re
 	@${CC} ${CFLAGS} -Iincludes ${OBJS} -o philo_val
 	@echo "$(_OK) philo_val compiled"
-	valgrind ./philo_val 4 410 200 200
+	valgrind ./philo_val 3 405 200 200 3
 
-test : re
-	./philosophers 100 399 200 200 3
+test1 : re
+	./philosophers 3 610 200 200 3
+test2 : re
+	./philosophers 4 410 200 200
+test3 : re
+	./philosophers 4 405 200 200
+test4 : re
+	./philosophers 200 425 200 200 10
 
 .PHONY: all clean fclean re force bonus sanitize valgrind test

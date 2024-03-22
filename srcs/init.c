@@ -14,7 +14,7 @@ static void	assign_forks(t_philo *philo, t_mutex *forks)
 	{
 		printf(" philo id = %d first fork id %d second fork id %d\n", philo->id, philo->id - 1, philo->id);/////
 		philo->fst_fork = &(forks[philo->id - 1]);
-		philo->scd_fork = &(forks[philo->id]);
+		philo->scd_fork = &(forks[philo->id % philo->rules->nb_phil]);
 	}
 }
 

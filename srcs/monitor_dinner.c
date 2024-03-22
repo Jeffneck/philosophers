@@ -18,10 +18,12 @@ bool	is_end_condition(t_rules *rules)
 	{
 		is_dead = (get_ms_elapsed(getter_tslastmeal(&philos[i])) > rules->ms_to_die); //philo_lock deja unlocke
 		if(is_dead == true) //time to die est accessible sans mutex ?
-			print_philo(&philos[i], DIED_MSG);
+			print_philo_died(&philos[i]);
 		if (getter_isfull(&philos[i]) == true)
 			nb_full++;
 	}
+	if(nb_full == rules->nb_phil)
+		setter_bool(&rules->rules_lock, DINNER_ENDED, true);
 	// printf("is_end_condition is dead = %d nb_full = %d\n", is_dead, nb_full);//
 	// fflush(stdout);//
 	return (is_dead || (nb_full == rules->nb_phil));

@@ -32,6 +32,17 @@ void	print_philo(t_philo *philo, char *msg)
 	
 }
 
+void	print_philo_died(t_philo *philo)
+{
+	t_rules *rules;
+
+	rules = philo->rules;
+	safe_mutex_handle(&(rules->write_lock), LOCK);
+	printf(DIED_MSG, get_ms_elapsed(rules->ts_start), philo->id);
+	setter_bool(&rules->rules_lock, DINNER_ENDED, true);
+	safe_mutex_handle(&(rules->write_lock), UNLOCK);
+}
+
 void	print_error(t_rules *rules, char *strerr) //utilisable que par le main thread donc on peut regarder is_init ?
 {
 	if(rules->write_lock.is_init) // && rules->rules_lock.is_init)

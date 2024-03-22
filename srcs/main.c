@@ -36,7 +36,7 @@ void    dinner_end(t_rules *rules) //etape de clean
 	t_mutex 	*forks;
 
     // stopper les actions de tous les threads
-	setter_bool(&rules->rules_lock, DINNER_ENDED, true);
+	// setter_bool(&rules->rules_lock, DINNER_ENDED, true);// je l'ai mis des la detection de died
 	philos = rules->philos;
 	forks = rules->forks;
     //join tous les threads

@@ -3,14 +3,14 @@
 static void	pre_desynchronize(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
-		ms_sleep(5);
+		ms_sleep(0.9 * philo->rules->ms_to_eat);
 }
 
-// static void	keep_desynchronize(t_philo *philo)
-// {
-// 	if (philo->id % 2 == 0)
-// 		ms_sleep(0.9 * philo->rules->ms_to_eat);
-// }
+static void	keep_desynchronize(t_philo *philo)
+{
+	if (philo->id % 2 == 0)
+		ms_sleep(0.9 * philo->rules->ms_to_eat);
+}
 
 static void	philo_think(t_philo *philo)
 {
@@ -30,15 +30,15 @@ static void	philo_eat(t_philo *philo)
 	print_philo(philo, TOOK_FORK_MSG);
 	safe_mutex_handle(philo->scd_fork, LOCK);
 	print_philo(philo, TOOK_FORK_MSG);
-	safe_mutex_handle(&(philo->philo_lock), LOCK);
-
+	// safe_mutex_handle(&(philo->philo_lock), LOCK);
+	setter_tslastmeal(philo, get_ms_timestamp());
+	// philo->ts_lastmeal = get_ms_timestamp();//tout mettre en microsec plutot ?
 	print_philo(philo, EAT_MSG);
-	philo->ts_lastmeal = get_ms_timestamp();//tout mettre en microsec plutot ?
 	ms_sleep(philo->rules->ms_to_eat);
 	if(++philo->nb_meals == philo->rules->max_meals)
-		philo->is_full = true;
-
-	safe_mutex_handle(&(philo->philo_lock), UNLOCK);
+		setter_isfull(philo, true);
+		// philo->is_full = true;
+	// safe_mutex_handle(&(philo->philo_lock), UNLOCK);
 	safe_mutex_handle(philo->fst_fork, UNLOCK);
 	safe_mutex_handle(philo->scd_fork, UNLOCK);
 }
@@ -64,7 +64,7 @@ void	*dinner_loop(void *p)
 		philo_eat(philo); 
 		philo_sleep(philo);
 		philo_think(philo);
-		// keep_desynchronize(philo);
+		keep_desynchronize(philo);
 	}
 	return(NULL); //inutile de retourner qq chose ? la fonction doit avoir ce prototype
 }
