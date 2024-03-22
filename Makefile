@@ -65,6 +65,8 @@ val : re
 
 test1 : re
 	./philosophers 3 610 200 200 3
+test5 : re
+	./philosophers 15 610 200 200 3
 test2 : re
 	./philosophers 4 410 200 200
 test3 : re
