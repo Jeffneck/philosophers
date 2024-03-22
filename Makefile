@@ -7,7 +7,7 @@ NAME_SHORT = philo
 CC = clang
 
 CFLAGS_SAN = -g3 -pthread -fsanitize=thread
-CFLAGS = -Werror -Wall -Wextra -g3 -pthread
+CFLAGS = -Werror -Wall -Wextra -pthread -g3 
 
 RM = rm -rf
 
@@ -47,20 +47,20 @@ clean :
 	@$(RM) $(OBJS)
 
 fclean : clean
-	@$(RM) $(NAME) val san
+	@$(RM) $(NAME) philo_val philo_san
 
 re : fclean all
 
 
 
-sanitize : ${OBJS}
+sanitize : re
 	@${CC} ${CFLAGS_SAN} -Iincludes ${OBJS} -o philo_san
 	@echo "$(_OK) philo_san compiled"
 	./philo_san 4 410 200 200
 
-valgrind : ${OBJS}
+val : re
 	@${CC} ${CFLAGS} -Iincludes ${OBJS} -o philo_val
 	@echo "$(_OK) philo_val compiled"
-	./philo_val 4 410 200 200
+	valgrind ./philo_val 4 410 200 200
 
 .PHONY: all clean fclean re force bonus sanitize valgrind

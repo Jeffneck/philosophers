@@ -17,6 +17,8 @@ bool	is_end_condition(t_rules *rules)
 	while(++i < rules->nb_phil && is_dead == false)
 	{
 		is_dead = (get_ms_elapsed(getter_tslastmeal(&philos[i])) > rules->ms_to_die); //philo_lock deja unlocke
+		printf("is_end_condition\n");//
+		fflush(stdout);//
 		if (getter_isfull(&philos[i]) == true)
 			nb_full++;
 	}
@@ -32,7 +34,11 @@ void	monitor_dinner(t_rules	*rules)
 	while(getter_bool(&rules->rules_lock, DINNER_READY) == false)//attendre que le repas commence avant de veifier le statut de chaque philo
 		ms_sleep(2);
 	while(is_end_condition(rules) == false)
+	{
+		printf("monitor_loop\n");//
+		fflush(stdout);//
 		ms_sleep(2);
+	}
 }
 
 // bool	one_philo_died(t_rules *rules)
