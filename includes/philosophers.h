@@ -185,6 +185,7 @@ void setter_tslastmeal(t_philo *philo, long new_value);
 bool	getter_bool(t_mutex *mutex, t_varcode varcode);
 bool	getter_isfull(t_philo *philo);
 long	getter_tslastmeal(t_philo *philo);
+long	getter_tsstart(t_philo *philo);
 
 //time utils
 long	get_ms_timestamp(void); //get_ms_timestamp

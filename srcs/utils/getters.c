@@ -34,3 +34,8 @@ long	getter_tslastmeal(t_philo *philo)
 {
 	return (getter_mtxlong(&philo->philo_lock, &(philo->ts_lastmeal)));
 }
+
+long	getter_tsstart(t_philo *philo)
+{
+	return (getter_mtxlong(&philo->rules->rules_lock, &(philo->rules->ts_start)));
+}

@@ -50,7 +50,7 @@ void    dinner_end(t_rules *rules) //etape de clean
 		}
 		free(philos);
 	}
-    //destroy tous les mutex
+	//destroy tous les mutex
 	if(forks)
 	{
 		i = -1;

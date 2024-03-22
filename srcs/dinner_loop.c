@@ -55,7 +55,8 @@ void	*dinner_loop(void *p)
 	//on attend que tous les philos soient crees pour commencer le dinner
 	while (getter_bool(&rules->rules_lock, DINNER_READY) == false) 
 		ms_sleep(1);
-	philo->ts_lastmeal = rules->ts_start;//philo_lock et rules_lock ??
+	// setter_tslastmeal(philo, getter_tsstart(philo));//philo_lock et rules_lock ?? //getter_ts_start semble inutile
+	setter_tslastmeal(philo, rules->ts_start);//philo_lock et rules_lock ??
 	pre_desynchronize(philo);
 	while (getter_bool(&rules->rules_lock, DINNER_ENDED) == false)
 	{

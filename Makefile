@@ -6,8 +6,9 @@ NAME_SHORT = philo
 
 CC = clang
 
-CFLAGS = -pthread -fsanitize=thread
-# -Werror -Wall -Wextra
+CFLAGS_SAN = -g3 -pthread -fsanitize=thread
+CFLAGS = -Werror -Wall -Wextra -g3 -pthread
+
 RM = rm -rf
 
 SRCS =  srcs/main.c \
@@ -46,9 +47,20 @@ clean :
 	@$(RM) $(OBJS)
 
 fclean : clean
-	@$(RM) $(NAME)
+	@$(RM) $(NAME) val san
 
 re : fclean all
 
-.PHONY: all clean fclean re force bonus
 
+
+sanitize : ${OBJS}
+	@${CC} ${CFLAGS_SAN} -Iincludes ${OBJS} -o philo_san
+	@echo "$(_OK) philo_san compiled"
+	./philo_san 4 410 200 200
+
+valgrind : ${OBJS}
+	@${CC} ${CFLAGS} -Iincludes ${OBJS} -o philo_val
+	@echo "$(_OK) philo_val compiled"
+	./philo_val 4 410 200 200
+
+.PHONY: all clean fclean re force bonus sanitize valgrind

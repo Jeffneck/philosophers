@@ -29,6 +29,8 @@ void	monitor_dinner(t_rules	*rules)
 {
 	printf("monitor_dinner\n");//
 	fflush(stdout);//
+	while(getter_bool(&rules->rules_lock, DINNER_READY) == false)//attendre que le repas commence avant de veifier le statut de chaque philo
+		ms_sleep(2);
 	while(is_end_condition(rules) == false)
 		ms_sleep(2);
 }
